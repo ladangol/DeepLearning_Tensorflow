@@ -1,26 +1,19 @@
-# Object_detection_Ova
-A sample project to detect the custom object using Tensorflow object detection API
+# Dogs_vs_Cats
+A sample project to classify images of cats and dogs 
 
 ## Folder Structure
-- Object_detection_Ova
+- dogs_vs_cats
   - src
-    - label_conversion.py
-	- data_cleanup.py
-    - datasplitte_Subdirectories.py
-    - data_augmentation.py 
-    - data_aug 
-		- __init__.py 
-		- bbox_util.py	
-		- data_aug.py	
-    - xml_to_csv.py 
-    - generate_tfrecord.py
+    - simple_cnn.ipynb
+    - simple_cnn.py
+
   - pre_trained_models
     - *downloaded files for the choosen pre-trained model will come here* 
   - data
-    - originalimages
+    - train
       - *Annotations for your images will come here*
       - *all of your images will come here* 
-    - augmentedImages/LabeledSplittedImages
+    - test
 	  - Test 
         - *all your images for testing will come here*	  
 	  - Train 
@@ -29,10 +22,10 @@ A sample project to detect the custom object using Tensorflow object detection A
 	  - Validation
         - *Annotations for your validation images will come here*
         - *all of your images for validation will come here*
-    - lable.pbtxt
-    - train.record
-	- Validation.record
-   - Models
+    - labels.npy
+    - data.npy
+
+   - models
      - *inference graph of the trained model will be saved here*
    - training
      - *checkpoints of the trained model will be saved here*
