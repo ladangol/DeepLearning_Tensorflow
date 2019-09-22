@@ -1,4 +1,4 @@
-The dataset can be downloaded for free from the Kaggle website, although I believe you must have a Kaggle account.
+The dataset can be downloaded for free from the Kaggle website https://www.kaggle.com/c/dogs-vs-cats/data, although I believe you must have a Kaggle account.
 
 If you do not have a Kaggle account, sign-up first.
 
