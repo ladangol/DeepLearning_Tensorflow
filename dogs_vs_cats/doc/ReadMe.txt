@@ -47,4 +47,7 @@ https://www.pyimagesearch.com/2018/04/09/how-to-quickly-build-a-deep-learning-im
 How to create a deep learning dataset using Google Images
 https://www.pyimagesearch.com/2017/12/04/how-to-create-a-deep-learning-dataset-using-google-images/
 
+To use Kaggle competitions data in google colab:
+
+https://www.kaggle.com/general/74235
 
