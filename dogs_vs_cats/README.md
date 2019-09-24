@@ -66,13 +66,6 @@ In simple_cnn.py, the whole images in the dataset are loaded in memory. All the 
 
 - main: depend on the user input, runs the training or the prediction function. 
 
-
-
-
-## Convert the data to Tensorflow record format
-
-
-
 ## How to run the code
 
 
