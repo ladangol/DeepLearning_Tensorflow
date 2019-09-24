@@ -37,46 +37,44 @@ A sample project to classify images of cats and dogs
     	- object_detection_tutorial_Ova.py   
     	- object_detection_tutorial_WebCam.py
 	
-## Setup Tensorflow models repository 
-Now it's time when we will start using Tensorflow object detection API so download Tensorflow Object Detection API from:
 
-https://github.com/tensorflow/models
+## Setup to use dogs_vs_cats repository 
 
-Once you download the model repository, follow the insllation instruction in Tensorflow Object Detection API tutorial:
-https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/install.html
 
-Now your Environment is all set to use Tensorlow object detection API.
+
+## Explore Different Training
+Build a Custom Training:
+If you want to build a custom training run simpletraining.py
+simple_cnn.py loads all the dogs and cats images in memory without any image augmentaion.
+
+Transfer Learning: 
+If you do not have enough memory to load all the data in memory use XXX.py
+
+If you are intersted in transfer learning run transfer_learning.py
+
+## Code Explanation
+- Define global variables:
+- prepare_data:
+In simple_cnn.py, the whole images in the dataset are loaded in memory. All the images are resized to a given size. There is no image augmentation in this step. 
+
+- define_model: Define the model architecture.
+
+- training: training process is set, adding checkpoints to save the best model, tensorboard logging for visualization , early stopping, ... .
+
+
+- predict: load the model and run it on the test data.
+
+- main: depend on the user input, runs the training or the prediction function. 
+
+
 
 
 ## Convert the data to Tensorflow record format
-In order to use Tensorflow API, you need to feed data in Tensorflow record format. I provide all the necessary scripts to help you to convert Pascal VOC format dataset to Tensorflow record format. 
-You need to create a file for label map, in this repo it is *label.pbtxt*, with the dictionary of the label and the id of objects. Check *label.pbtxt* given in the repository to undestand the format, it's pretty simple 
-(Note: name of the label should be same as what you gave while labeling object using the labelImg). Please update label_conversion.py simillar to label.pbtxt.
-
-Now is time to create record file. From Object_detection_Ova as present working directory run the following command to create Tensorflow record:
-
-To clean the annotation file or add information before using the data run data_cleanup.py: 
- - python  data_cleanup.py --data_path=data\originalimages\All
-
-To split the data run datasplitte_Subdirectories.py
- - python src\datasplitte_Subdirectories.py --filename_extension=".png" --phases_info="percent,Train:80,Test:10,Validation:10" --data_path=data\originalimages\All --output_path=data\LabeledSplittedImages --ignored_directories="All_300x300"
-
-If data augmentation is needed then run data_augmentation.py
- - python  src\data_cleanup.py --data_path=data\LabeledSplittedImages --output_path=data\augmentedImages
-
-After preparing the data we need to convert the data to tenserflow record. Do the following:
- - python src\xml_to_csv.py  --data_path=data\LabeledSplittedImages --output_path=data
- - python src\generate_tfrecord.py --csv_input=data/train_labels.csv --output_path=data/train.record
- - python src\generate_tfrecord.py --csv_input=data/Validation_labels.csv --output_path=data/Validation.record
 
 
-## Training
-Now that we have data in the right format to feed, we can go ahead with training our model. The first thing you need to do is to select the pre-trained model you would like to use. 
-You could check and download a pret-rained model from [Tensorflow detection model zoo Github page](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md). 
-Once downloaded, extract all file to the folder you had created for saving the pre-trained model files. Next, need to copy *models/research/sample/configs/<your_model_name.config>* and paste it in the project repo. 
-You need to configure 5 paths in this file. Just open this file and search for PATH_TO_BE_CONFIGURED and replace it with the required path. I used pre-trained faster RCNN trained on COCO dataset and I have added 
-modified config file (along with PATH_TO_BE_CONFIGURED as comment above lines which has been modified) for same in this repo. You could also play with other hyperparameters if you want. Now you are all set to train 
-your model, just run th following command with models/research as present working directory
+
+## How to run the code
+
 
 python object_detection/legacy/train.py --logtostderr --train_dir=<path_to_the folder_for_saving_checkpoints> --pipeline_config_path=<path_to_config_file>
 
@@ -87,18 +85,6 @@ python object_detection/legacy/train.py --logtostderr --train_dir=D:\Object_dete
 
 Checkpoints will be saved in training folder. 
 
-
-## generate inference graph from saved checkpoints
-python object_detection/export_inference_graph.py --input_type=image_tensor --pipeline_config_path=<path_to_config_file> --trained_checkpoint_prefix=<path to saved checkpoint> --output_directory=<path_to_the_folder_for_saving_inference_graph>
-
-An example is:
-
-python object_detection/export_inference_graph.py \    --input_type image_tensor \    --pipeline_config_path D:/Object_detection_ova/config/ssd_mobilenet_v1_coco.config \    --trained_checkpoint_prefix D:/Object_detection_ova/training/model.ckpt-5923 \    --output_directory D:/Object_detection_ova/Models
-
-
-## Test the trained model
-In order to test the re-tran model, All you need to do is to copy model/research/object_detection/object_detection_tutorial.ipynb and modify it to work with you inference graph. I modified the script and I have placed same in this repository inside the folder named as *extra*
-A modified file is already given as object_detection_tutorial_Ova.py with this repo, you just need to change the path to model and path to images. The 2nd version of the file given as object_detection_tutorial_WebCam.py with this repo, uses Your Webcam to do object detection.
 
 
 
