@@ -1,3 +1,4 @@
+
 # Dogs_vs_Cats
 A sample project to classify images of cats and dogs 
 
@@ -78,6 +79,17 @@ python object_detection/legacy/train.py --logtostderr --train_dir=D:\Object_dete
 
 Checkpoints will be saved in training folder. 
 
+## Training results
+
+The model is then fit and evaluated, which takes approximately 1 hour on modern GPU hardware.
+
+Your specific results may differ given the stochastic nature of the learning algorithm.
+
+In this case, we can see that the model achieved an accuracy of about 82% on the validation dataset as shown in the following figure.
+
+Reviewing this figure, we can see that the model has overfit the training dataset at 60 epochs.
+
+![image](../dogs_vs_cats/models/simple-cnn_acc_loss_graph.png)
 
 
 
