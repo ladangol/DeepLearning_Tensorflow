@@ -1,1 +1,0 @@
-checkpoints of the trained model will be saved here
