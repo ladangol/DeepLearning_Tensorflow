@@ -45,7 +45,9 @@ def define_model(in_num_classes, in_image_size):
     model .summary()
     return model
 
-def predict(in_data_path, in_model_path, in_categories, in_image_size):
+def predict(in_data_path, in_model_path, in_config ):
+    in_image_size = in_config.image_size
+    in_categories = in_config.categories
     model = keras.models.load_model(in_model_path)
     for image_name in os.listdir(in_data_path):
         image_path = getPath(in_data_path, image_name)

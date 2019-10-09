@@ -9,3 +9,4 @@ data_path_root = 'data'
 
 data_name = 'simple_dogs_vs_cats_photos.npy'
 labels_name = 'simple_dogs_vs_cats_labels.npy'
+confusion_matrix_file_name = "confusion_matrix.txt"

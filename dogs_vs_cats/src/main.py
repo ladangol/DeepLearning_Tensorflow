@@ -10,27 +10,23 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 
 from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
-
+import numpy as np
 from numpy import load
 import time
-
+import sklearn.metrics as metrics
 
 def train( in_model, in_config):
-    in_num_classes = in_config.num_classes
-    in_batch_size = in_config.num_classes
-    in_num_epochs = in_config.num_classes
-    in_data_path = getPath(in_config.data_path_root, in_config.data_name)
-    in_labels_path = getPath(in_config.data_path_root, in_config.labels_name)
-
     print("Loading data!")
-    data = load(in_data_path)
-    labels = load(in_labels_path)
+    data_path = getPath(in_config.data_path_root, in_config.data_name)
+    labels_path = getPath(in_config.data_path_root, in_config.labels_name)
+    data = load(data_path)
+    labels = load(labels_path)
 
     print("Preprocessing data!")
     (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=42)
 
-    trainY = keras.utils.to_categorical(trainY, in_num_classes)
-    testY = keras.utils.to_categorical(testY,  in_num_classes)
+    trainY = keras.utils.to_categorical(trainY, in_config.num_classes)
+    testY = keras.utils.to_categorical(testY,  in_config.num_classes)
 
     NAME = f'Cat-vs-dog-cnn-64x2-{int(time.time())}'
     file_path = "Model-{epoch:02d}-{val_acc:.3f}"  # unique file name that will include the epoch and the validation acc for that epoch
@@ -45,13 +41,18 @@ def train( in_model, in_config):
     callback_list = [check_point, tensor_board]
 
     # train the neural network
-    in_model.fit(trainX, trainY, validation_data=(testX, testY), epochs=in_num_epochs,
-                 batch_size=in_batch_size, verbose=1, callbacks=callback_list)
+    in_model.fit(trainX, trainY, validation_data=(testX, testY), epochs=in_config.num_epochs,
+                 batch_size=in_config.batch_size, verbose=1, callbacks=callback_list)
 
     # evaluate the network
     print("[INFO] evaluating network...")
-    predictions = in_model.predict(testX, batch_size=in_batch_size)
-    print(classification_report(testY.argmax(axis=1), predictions.argmax(axis=1), target_names=in_num_classes))
+    predictions = in_model.predict(testX, batch_size=in_config.batch_size)
+    print(classification_report(testY.argmax(axis=1), predictions.argmax(axis=1), target_names=in_config.categories))
+
+    filename = getPath('Models', in_config.confusion_matrix_file_name)
+    confusion_matrix = metrics.confusion_matrix(y_true=testY, y_pred=predictions)
+    with open(filename, 'w') as f:
+        f.write(np.array2string(confusion_matrix, separator=', '))
 
 def print_main_menu():
     print('press d for data_preparation: ')
@@ -65,64 +66,50 @@ def print_train_menu():
     print('press e for exit: ')
 
 def print_prediction_menu():
-    print('press t for prediction: ')
+    print('press p for prediction: ')
     print('press c for cam prediction: ')
     print('press e for exit: ')
 
 def main():
-    do_data_preparation = False
-    do_train = False
-    do_predict = False
-    do_cam_train = False
-    do_cam_predict = False
-
     print_main_menu()
     action = input()
     if action == 'd':
-        do_data_preparation = True
+        # define location of dataset
+        train_data_path = getPath(config.data_path_root, 'train')
+        prepare_data(train_data_path, config)
     elif action == 'e':
         return
     elif action == 't':
         print_train_menu()
         action = input()
+        if (action == "\n" or action == ""):
+            action = input()
+        model = None
         if action == 't':
-            do_train = True
+            model = define_model(config.num_classes, config.image_size)
         elif action == 'e':
             return
         elif action == 'c':
-            do_cam_train = True
+            model = define_cam_model(config.num_classes, config.image_size)
+        if model != None:
+            train(model, config)
 
     elif action == 'p':
         print_prediction_menu()
         action = input()
+        if (action == "\n" or action == ""):
+            action = input()
         if action == 'p':
-            do_predict = True
+            test_model_path = getPath(config.model_path_root, 'no_cam\\Model-60-0.820.model')
+            test_data_path = getPath(config.data_path_root, 'test')
+            predict(test_data_path, test_model_path, config)
         elif action == 'e':
             return
         elif action == 'c':
-            do_cam_predict = True
+            test_model_path = getPath(config.model_path_root, 'Vgg_16_Cam\\Model-02-0.978.model')
+            test_data_path = getPath(config.data_path_root, 'test\\cam')
+            cam_predict(test_data_path, test_model_path, config.image_size)
 
-    if(do_data_preparation):
-        # define location of dataset
-        train_data_path = getPath(config.data_path_root, 'train')
-        prepare_data(train_data_path, config)
 
-    if(do_train):
-        model = define_model(config.num_classes, config.image_size)
-        train(model, config)
-
-    if (do_predict):
-        test_model_path = getPath(config.model_path_root,'Model-60-0.820.model')
-        test_data_path = getPath(config.data_path_root, 'test')
-        predict(test_data_path, test_model_path)
-
-    if (do_cam_train):
-        model = define_cam_model(config.num_classes, config.image_size)
-        train(model, config)
-
-    if (do_cam_predict):
-        test_model_path = getPath(config.model_path_root, 'Vgg_16_Cam\\Model-02-0.978.model')
-        test_data_path = getPath(config.data_path_root, 'test\\cam')
-        cam_predict(test_data_path, test_model_path, config.image_size)
 
 main()
