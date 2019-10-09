@@ -1,15 +1,12 @@
 from util import getPath
 
 import keras
-from keras.models import Sequential
-from keras.layers import Conv2D
-from keras.layers import MaxPooling2D
 from keras.layers import Dense
 from keras.layers import Flatten
 from keras.optimizers import SGD
 from keras.models import Model
-from keras.layers import GlobalAveragePooling2D
 from keras.layers import AveragePooling2D
+from keras.applications.vgg16 import VGG16
 
 import scipy as sp
 from matplotlib import pyplot
@@ -18,41 +15,14 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-def define_model_cam(in_num_classes, in_image_size):
-    model = Sequential()
-
-    model.add(Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_uniform', padding='same', input_shape=(in_image_size, in_image_size, 3)))
-    model.add(MaxPooling2D((2, 2)))
-
-    model.add(Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_uniform', padding='same'))
-    model.add(MaxPooling2D((2, 2)))
-
-    model.add(Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_uniform', padding='same'))
-    model.add(MaxPooling2D((2, 2)))
-
-    model.add(Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_uniform', padding='same'))
-    model.add(MaxPooling2D((2, 2)))
-
-    model.add(Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_uniform', padding='same', name='lastCov'))
-    model.add(AveragePooling2D((9,9), name='GAP'))
-
-    model.add(Flatten())
-
-    #weight
-    model.add(Dense(in_num_classes, activation="softmax"))
-    # compile model
-    opt = SGD(lr=0.0001, momentum=0.9)
-
-    model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
-    model .summary()
-    return model
-
-from keras.applications.vgg16 import VGG16
-
 # define cnn model
-def define_VGG16_model_cam(in_num_classes, in_image_size):
+def define_model(in_num_classes, in_image_size):
+	if in_image_size != 224:
+          print("Invalid image size for VGG 16!")
+          return None
+
 	# load model
-	model = VGG16(include_top=False, input_shape=(224, 224, 3))
+	model = VGG16(include_top=False, input_shape=(in_image_size, in_image_size, 3))
 	# mark loaded layers as not trainable
 	for layer in model.layers:
 		layer.trainable = True
@@ -70,7 +40,7 @@ def define_VGG16_model_cam(in_num_classes, in_image_size):
 	model .summary()
 	return model
 
-def predic_cam(in_data_path, in_model_path, in_image_size):
+def predict(in_data_path, in_model_path, in_image_size):
     model = keras.models.load_model(in_model_path)
     # get the weights from the last layer
     gap_weights = model.layers[-1].get_weights()[0]
