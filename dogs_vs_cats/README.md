@@ -90,9 +90,14 @@ In this case, we can see that the model achieved an accuracy of about 82% on the
 Reviewing this figure, we can see that the model has overfit the training dataset at 60 epochs.
 
 ![image](../dogs_vs_cats/models/simple-cnn_acc_loss_graph_v1.jpg)
+![image](../dogs_vs_cats/models/simple-cnn_confusion_matrix.jpg)
+![image](../dogs_vs_cats/models/simple-cnn_network_evaluation.jpg)
 
 ## Class Activation Map
 Using keras pre-trained model of VGG_16.
+
+![image](../dogs_vs_cats/models/cam_vgg_16/confusion_matrix.jpg)
+![image](../dogs_vs_cats/models/cam_vgg_16/network_evaluation.jpg)
 
 - Example 1:
 
