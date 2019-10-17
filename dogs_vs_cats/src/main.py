@@ -1,5 +1,5 @@
 import config
-from util import getPath
+from util import get_path, plot_confusion_matrix, get_categories
 from data_prepration import prepare_data
 
 from simple_cnn import define_model, predict
@@ -17,8 +17,8 @@ import sklearn.metrics as metrics
 
 def train( in_model, in_config):
     print("Loading data!")
-    data_path = getPath(in_config.data_path_root, in_config.data_name)
-    labels_path = getPath(in_config.data_path_root, in_config.labels_name)
+    data_path = get_path(in_config.data_path_root, in_config.data_name)
+    labels_path = get_path(in_config.data_path_root, in_config.labels_name)
     data = load(data_path)
     labels = load(labels_path)
 
@@ -32,9 +32,9 @@ def train( in_model, in_config):
     file_path = "Model-{epoch:02d}-{val_acc:.3f}"  # unique file name that will include the epoch and the validation acc for that epoch
     check_point = ModelCheckpoint("Models/{}.model".format(file_path, monitor='val_acc', verbose=1, save_best_only=True,
                                                           mode='max'))  # saves only the best ones
-    log_path = getPath(config.model_path_root, 'logs')
+    log_path = get_path(config.model_path_root, 'logs')
     log_file_name = '{}'.format(NAME)
-    log_full_path = getPath(log_path, log_file_name)
+    log_full_path = get_path(log_path, log_file_name)
     tensor_board = TensorBoard(log_dir=log_full_path)
 
     early_stop = EarlyStopping(monitor='val_loss', patience=1, verbose=1, mode='auto')
@@ -47,12 +47,14 @@ def train( in_model, in_config):
     # evaluate the network
     print("[INFO] evaluating network...")
     predictions = in_model.predict(testX, batch_size=in_config.batch_size)
-    print(classification_report(testY.argmax(axis=1), predictions.argmax(axis=1), target_names=in_config.categories))
+    print(classification_report(testY.argmax(axis=1), predictions.argmax(axis=1), target_names=get_categories(in_config)))
+    print("")
 
-    filename = getPath('Models', in_config.confusion_matrix_file_name)
-    confusion_matrix = metrics.confusion_matrix(y_true=testY, y_pred=predictions)
-    with open(filename, 'w') as f:
-        f.write(np.array2string(confusion_matrix, separator=', '))
+    y_pred_classes = np.argmax(predictions, axis=1)
+    y_true = np.argmax(testY, axis=1)
+    confusion_matrix = metrics.confusion_matrix(y_true=y_true, y_pred=y_pred_classes)
+
+    plot_confusion_matrix(confusion_matrix, in_config)
 
 def print_main_menu():
     print('press d for data_preparation: ')
@@ -75,7 +77,7 @@ def main():
     action = input()
     if action == 'd':
         # define location of dataset
-        train_data_path = getPath(config.data_path_root, 'train')
+        train_data_path = get_path(config.data_path_root, 'train')
         prepare_data(train_data_path, config)
     elif action == 'e':
         return
@@ -100,16 +102,14 @@ def main():
         if (action == "\n" or action == ""):
             action = input()
         if action == 'p':
-            test_model_path = getPath(config.model_path_root, 'no_cam\\Model-60-0.820.model')
-            test_data_path = getPath(config.data_path_root, 'test')
+            test_model_path = get_path(config.model_path_root, 'no_cam\\Model-60-0.820.model')
+            test_data_path = get_path(config.data_path_root, 'test')
             predict(test_data_path, test_model_path, config)
         elif action == 'e':
             return
         elif action == 'c':
-            test_model_path = getPath(config.model_path_root, 'Vgg_16_Cam\\Model-02-0.978.model')
-            test_data_path = getPath(config.data_path_root, 'test\\cam')
+            test_model_path = get_path(config.model_path_root, 'Vgg_16_Cam\\Model-02-0.978.model')
+            test_data_path = get_path(config.data_path_root, 'test\\cam')
             cam_predict(test_data_path, test_model_path, config.image_size)
-
-
 
 main()
