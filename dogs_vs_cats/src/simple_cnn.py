@@ -1,4 +1,4 @@
-from util import getPath
+from util import get_path, get_category
 
 import keras
 from keras.layers import Dropout
@@ -46,17 +46,16 @@ def define_model(in_num_classes, in_image_size):
     return model
 
 def predict(in_data_path, in_model_path, in_config ):
-    in_image_size = in_config.image_size
-    in_categories = in_config.categories
+    image_size = in_config.image_size
     model = keras.models.load_model(in_model_path)
     for image_name in os.listdir(in_data_path):
-        image_path = getPath(in_data_path, image_name)
+        image_path = get_path(in_data_path, image_name)
         image = cv2.imread(image_path)
-        image = cv2.resize(image, (in_image_size, in_image_size))
+        image = cv2.resize(image, (image_size, image_size))
 
-        predictions = model.predict([image.reshape(-1, in_image_size, in_image_size, 3)])
+        predictions = model.predict([image.reshape(-1, image_size, image_size, 3)])
         class_id = np.argmax(predictions)
-        class_name = in_categories[class_id]
+        class_name = get_category(in_config, class_id)
         print(image_name + ': Prediction ' + class_name)
         plt.imshow(image, cmap=plt.cm.binary)
         plt.xlabel(class_name)

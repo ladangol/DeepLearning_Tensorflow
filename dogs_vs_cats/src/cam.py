@@ -1,4 +1,4 @@
-from util import getPath
+from util import get_path
 
 import keras
 from keras.layers import Dense
@@ -52,7 +52,7 @@ def predict(in_data_path, in_model_path, in_image_size):
 
     for image_name in os.listdir(in_data_path):
         idx = 0
-        image_path = getPath(in_data_path, image_name)
+        image_path = get_path(in_data_path, image_name)
         image = cv2.imread(image_path)
         image = cv2.resize(image, (in_image_size, in_image_size))
 
