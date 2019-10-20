@@ -34,9 +34,7 @@ A sample project to classify images of cats and dogs
      - *config file for the choosen model will come here*
    -testimages
     -result of testing will come here*
-   - extra
-    	- object_detection_tutorial_Ova.py   
-    	- object_detection_tutorial_WebCam.py
+
 	
 
 ## Setup to use dogs_vs_cats repository 
@@ -72,10 +70,6 @@ In simple_cnn.py, the whole images in the dataset are loaded in memory. All the 
 
 python object_detection/legacy/train.py --logtostderr --train_dir=<path_to_the folder_for_saving_checkpoints> --pipeline_config_path=<path_to_config_file>
 
-
-An example is:
-
-python object_detection/legacy/train.py --logtostderr --train_dir=D:\Object_detection_Ova\training\ --pipeline_config_path=D:\Object_detection_Ova\config\ssd_mobilenet_v1_coco.config
 
 Checkpoints will be saved in training folder. 
 
