@@ -91,18 +91,10 @@ def train_neural_network(in_config):
             acc_test = accuracy.eval(feed_dict={data_placeholder: test_x, labels_placeholder: test_y})
             print("Epoch:", epoch + 1, " Test accuracy:", acc_test)
 
-        # acc_train = accuracy.eval(feed_dict={data_placeholder: batch_x, labels_placeholder: batch_y})
-        # acc_test = accuracy.eval(feed_dict={data_placeholder: test_x, labels_placeholder: test_y})
-        # print("Epoch:", epoch + 1, "Train accuracy:", acc_test, "test accuracy:", acc_test)
-
-        print('saving model')
-        model_name = get_path(in_config.model_path_root,  "dog-breeds")
-        model_full_path = "{0}-epoch-{1:02d}-epoch_loss-{2:.3f}".format(model_name, epoch+1, epoch_loss)
-        saver.save(sess, model_full_path)
-
-
-
-
+            print('saving model')
+            model_name = get_path(in_config.model_path_root,  "dog-breeds")
+            model_full_path = "{0}-epoch-{1:02d}-epoch_loss-{2:.3f}".format(model_name, epoch+1, epoch_loss)
+            saver.save(sess, model_full_path)
 
 def print_main_menu():
     print('press d for data_preparation: ')
