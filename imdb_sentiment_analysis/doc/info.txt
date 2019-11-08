@@ -1,0 +1,9 @@
+conda activate tensorflow-gpu-3
+
+cd D:\DeepLearning_Tensorflow\imdb_sentiment_analysis
+
+D:\DeepLearning_Tensorflow\imdb_sentiment_analysis, via terminal, you start TensorBoard with:
+tensorboard --logdir=models\
+http://localhost:6006/
+
+
