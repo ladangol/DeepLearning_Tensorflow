@@ -1,0 +1,9 @@
+conda activate tensorflow-gpu-3
+
+cd D:\DeepLearning_Tensorflow\dogs_breeds
+
+D:\DeepLearning_Tensorflow\dogs_breeds, via terminal, you start TensorBoard with:
+tensorboard --logdir=models\
+http://localhost:6006/
+
+
