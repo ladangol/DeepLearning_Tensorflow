@@ -1,27 +1,11 @@
 import pandas as pd
 from tester import validation, sentiment_analysis_result
 from train import partial_train, partial_retrain, train
-
-# from sklearn.pipeline import Pipeline
-# from sklearn.model_selection import train_test_split
-# from sklearn.naive_bayes import MultinomialNB
-# from sklearn.feature_extraction.text import TfidfTransformer
-# from sklearn.feature_extraction.text import CountVectorizer
-# from sklearn.ensemble import RandomForestClassifier
-# import string
-# from nltk.corpus import stopwords
-# from nltk.stem import PorterStemmer
-# import re
-# from nltk.tokenize import TweetTokenizer
-# from sklearn.metrics import classification_report
-# import datetime
-# import pickle
-# import csv
+import os
 
 def User_interaction(modelfilename, bowTransformefilename,TfidfTransformefilename, traindatafilename):
     out_data = pd.DataFrame()
-
-    messages = pd.read_csv('./data/Twitter/twitter-sentiment-analysis2/test.csv', encoding='ISO-8859-1',
+    messages = pd.read_csv('./data/Twitter/twitter-sentiment-analysis2/test.csv',
                            engine='python')
     for i in range(0, len(messages)):
         phrase = messages.iloc[i].SentimentText
@@ -68,15 +52,15 @@ def main():
             print("Applicatin end by user!")
             exit(0)
         elif(answer == "1"):
-            partial_train('./data/Twitter/twitter-sentiment-analysis2/train.csv')
+            review_file = os.path.join('..','..', 'data', 'IMDB Dataset.csv')
+            partial_train(review_file)
         elif(answer == "2"):
-            validation("./Model/lastModel.p", "./Model/lastBowTransforme.p", "./Model/lastTfidfTransforme.p")
+            validation("../../models/lastModel.p", "../../models/lastBowTransforme.p", "../../models/lastTfidfTransforme.p")
         elif (answer == "3"):
             User_interaction("./Model/lastModel.p","./Model/lastBowTransforme.p", "./Model/lastTfidfTransforme.p", "./Data/retrain.csv")
         elif (answer == "4"):
             partial_retrain("./Model/lastModel.p", "./Model/lastBowTransforme.p","./Model/lastTfidfTransforme.p",'./data/retrain.csv')
-        elif(answer == "5"):
-            train("./data/bonus.csv")
+
         else:
             print("Please enter the valid option!")
 
@@ -84,4 +68,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
