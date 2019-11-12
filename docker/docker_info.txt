@@ -1,0 +1,62 @@
+Install docker desktop on Windows:
+https://hub.docker.com/?overlay=onboarding
+
+Enable the Hyper-V role through Settings
+1) Right click on the Windows button and select 'Apps and Features'.
+2) Select Turn Windows Features on or off.
+3)Select Hyper-V and click OK.
+
+
+on Mac:
+install Homebrew
+https://coolestguidesontheplanet.com/installing-homebrew-os-x-yosemite-10-10-package-manager-unix-apps/
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+then use brew package manger to install docker:
+brew install docker
+
+list of directories:
+ls
+—————————————————————————
+
+File name must be DockerFile
+imagename will be the image on which you run your docker. Here we choose tensorflow.
+
+run windows powershell
+cd D:\docker_projects
+
+to find the docker version:
+docker —version
+
+to install a docker:
+docker build -t imageId/Tag .
+
+to start container
+docker run --name containername_to_give_it imageId/Tag  
+
+to start docker in interactive mode:
+docker run  -it --name containername_to_give_it imageId/Tag  
+
+to shows running containers:
+docker ps
+
+list all the installed containers:
+docker images
+
+to stop a runing container:
+docker stope hash_Id or container/ name of container which assign automatically by docker/ the name you gave to container when you start the container
+
+to delete a container:
+docker rmi -f imageId/Tag
+
+to get out of docker interactive shell:
+type exit
+
+mount a file or drive:
+docker run -it -v LocalPath:containerPath imageId/Tag
+docker run -it -v D:/DeepLearning_Tensorflow/:/srv/shima/ tensorflow 
+
+to go back one folder up:
+cd ..
+to run python code using current image:
+python3 filename.py
