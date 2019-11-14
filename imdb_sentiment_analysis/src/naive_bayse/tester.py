@@ -1,7 +1,7 @@
 import pickle
 import pandas as pd
 
-from src.util import clean_text
+from util import clean_text
 test_phrases = {
     "Well done!": 1,
     "horrible acting": 0,
@@ -40,7 +40,11 @@ def sentiment_analysis_result(input_review, *args, **kwargs):
 
     input_review = clean_text(input_review)
     input_review = [input_review]  #convert it to the list because
+<<<<<<< HEAD
     #transform needs a iterable object
+=======
+    #transform needs a iterable
+>>>>>>> naivebayes
     messages_bow_test = bow_transformer.transform(input_review)
     messages_transformer_test = tfidf_transformer.transform(messages_bow_test)
     result = Model.predict(messages_transformer_test)
