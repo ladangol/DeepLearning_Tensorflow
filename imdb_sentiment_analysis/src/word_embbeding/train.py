@@ -1,4 +1,3 @@
-from  build_model import  define_model
 from src.util import  get_path
 from numpy import  load
 
@@ -58,3 +57,31 @@ def predict(in_config):
     model = keras.models.load_model(model_name)
     prediction = model.predict(test_samples_tokens_pad)
     print(prediction)
+
+def word2vector_analogy(in_config):
+    from gensim.models.word2vec import Word2Vec
+    from src.util import get_path
+    from pprint import pprint
+    model_name = get_path(in_config.data_path_root, in_config.word2vec_model)
+    model = Word2Vec.load(model_name)
+    result = model.doesnt_match("man woman child kitchen".split())
+    print("input: man woman child kitchen")
+    print("result: ", result)
+    result = model.doesnt_match("good bad horrible awful".split())
+    print("input: good bad horrible awful")
+    print("result: ", result)
+    result = model.doesnt_match("good bad horrible awful king".split())
+    print("input: good bad horrible awful king")
+    print("result: ", result)
+    result = model.wv.most_similar("disappointed")
+    print("input: most_similar to disappointed")
+    print("result: ")
+    pprint(result)
+    result = model.wv.most_similar("director")
+    print("input: most_similar to director")
+    print("result: ")
+    pprint(result)
+    result = model.wv.most_similar_cosmul(positive=['actor','woman'], negative=['man'])
+    print("input: actor + woman - man")
+    print("result: ")
+    pprint(result)
