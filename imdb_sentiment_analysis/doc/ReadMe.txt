@@ -1,3 +1,4 @@
+https://www.kaggle.com/c/word2vec-nlp-tutorial/overview/part-3-more-fun-with-word-vectors
 https://towardsdatascience.com/machine-learning-word-embedding-sentiment-classification-using-keras-b83c28087456
 https://www.geeksforgeeks.org/replacing-strings-with-numbers-in-python-for-data-analysis/
 https://machinelearningmastery.com/use-word-embedding-layers-deep-learning-keras/
