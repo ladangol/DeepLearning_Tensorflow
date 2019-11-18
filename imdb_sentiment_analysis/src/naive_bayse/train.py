@@ -9,12 +9,8 @@ from sklearn.ensemble import RandomForestClassifier
 import string
 from sklearn.metrics import classification_report
 import pickle
-<<<<<<< HEAD
-from os import path
-from src.util import clean_text
-=======
 from util import clean_text
->>>>>>> naivebayes
+
 import os
 import time
 
@@ -65,11 +61,9 @@ def partial_train(datafilename):
 
     filename = os.path.join('..', '..', 'models','TfidfTransforme_')+time_str +".p"
     pickle.dump(tfidf_transformer, open(filename, "wb"))
-<<<<<<< HEAD
+
     filename = os.path.join('..', '..', 'models', 'lastTfidfTransforme.p')
-=======
-    filename = os.path.join('..', '..' 'models', 'lastTfidfTransforme.p')
->>>>>>> naivebayes
+
     pickle.dump(tfidf_transformer, open(filename, "wb"))
 
     # type(model)
