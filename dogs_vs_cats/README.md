@@ -5,8 +5,12 @@ A sample project to classify images of cats and dogs
 ## Folder Structure
 - dogs_vs_cats
   - src
-    - simple_cnn.ipynb
+    - cam.py
     - simple_cnn.py
+    - config.py
+    - main.py
+    - util.py
+    - data_prepration.py
 
   - pre_trained_models
     - *downloaded files for the choosen pre-trained model will come here* 
@@ -15,25 +19,13 @@ A sample project to classify images of cats and dogs
       - *Annotations for your images will come here*
       - *all of your images will come here* 
     - test
-	  - Test 
-        - *all your images for testing will come here*	  
-	  - Train 
-		- *Annotations for your training images will come here*
-		- *all of your images for training will come here*	  
-	  - Validation
-        - *Annotations for your validation images will come here*
-        - *all of your images for validation will come here*
-    - labels.npy
+    - labels.npy 
     - data.npy
 
    - models
      - *inference graph of the trained model will be saved here*
-   - training
-     - *checkpoints of the trained model will be saved here*
-   - config
-     - *config file for the choosen model will come here*
-   -testimages
-    -result of testing will come here*
+
+
 
 	
 
@@ -43,8 +35,7 @@ A sample project to classify images of cats and dogs
 
 ## Explore Different Training
 Build a Custom Training:
-If you want to build a custom training run simpletraining.py
-simple_cnn.py loads all the dogs and cats images in memory without any image augmentaion.
+If you want to build a custom training run simple_cnn.py loads all the dogs and cats images in memory without any image augmentaion.
 
 Transfer Learning: 
 If you do not have enough memory to load all the data in memory use XXX.py
