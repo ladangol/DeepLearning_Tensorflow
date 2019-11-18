@@ -49,3 +49,4 @@ python DeepLearning_Tensorflow/imdb_sentiment_analysis/word_embbeding/main.py
 Checkpoints will be saved in DeepLearning_Tensorflow/imdb_sentiment_analysis/model folder. 
 
 ## Training results
+
