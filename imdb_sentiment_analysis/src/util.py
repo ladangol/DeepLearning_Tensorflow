@@ -4,8 +4,6 @@ import re
 def get_path(in_root, in_folder):
     return os.path.join(in_root, in_folder)
 
-
-
 stop_words = ["is", "i", "me", "my", "myself", "we", "our", "ours", "ourselves",
               "you", "your", "yours", "yourself", "yourselves", "he", "him", "his",
               "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they",
@@ -28,6 +26,9 @@ def clean_text(text):
     text = [word for word in text.split(" ") if not word in stop_words]
     text = " ".join(text)
     return text
+
+
+
 
 
 
