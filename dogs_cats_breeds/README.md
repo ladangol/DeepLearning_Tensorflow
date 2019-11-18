@@ -1,4 +1,4 @@
-# Dogs_breeds
+# Dogs_Cats_Breeds
 A sample project to classify images of dogs and cats and dogs breeds. 
 
 ## Folder Structure
