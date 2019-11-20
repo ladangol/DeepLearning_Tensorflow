@@ -12,3 +12,20 @@ https://medium.com/nanonets/how-to-easily-build-a-dog-breed-image-classification
 
 https://www.pyimagesearch.com/2018/06/04/keras-multiple-outputs-and-multiple-losses/
 https://github.com/keras-team/keras/issues/10306
+
+How to load a custom dataset with tf.data [Tensorflow]
+https://www.youtube.com/watch?v=bqeUmLCgsVw
+
+Data loader
+https://pythonprogramming.net/tensorflow-neural-network-session-machine-learning-tutorial/
+https://towardsdatascience.com/how-to-quickly-build-a-tensorflow-training-pipeline-15e9ae4d78a0
+https://www.datacamp.com/community/tutorials/tensorflow-tutorial
+https://adventuresinmachinelearning.com/convolutional-neural-networks-tutorial-tensorflow/
+https://gist.github.com/urimerhav
+
+ML pipeline and guides:
+https://www.jeremyjordan.me/ml-projects-guide/
+
+Practical Advice for Building Deep Neural Networks
+https://pcc.cs.byu.edu/2017/10/02/practical-advice-for-building-deep-neural-networks/
+

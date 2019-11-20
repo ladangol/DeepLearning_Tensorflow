@@ -11,9 +11,6 @@ A sample project to classify images of cats and dogs
     - main.py
     - util.py
     - data_prepration.py
-
-  - pre_trained_models
-    - *downloaded files for the choosen pre-trained model will come here* 
   - data
     - train
       - *Annotations for your images will come here*
@@ -43,26 +40,17 @@ If you do not have enough memory to load all the data in memory use XXX.py
 If you are intersted in transfer learning run transfer_learning.py
 
 ## Code Explanation
-- Define global variables:
-- prepare_data:
-In simple_cnn.py, the whole images in the dataset are loaded in memory. All the images are resized to a given size. There is no image augmentation in this step. 
-
-- define_model: Define the model architecture.
-
-- training: training process is set, adding checkpoints to save the best model, tensorboard logging for visualization , early stopping, ... .
-
-
-- predict: load the model and run it on the test data.
-
-- main: depend on the user input, runs the training or the prediction function. 
+- config.py: Define global variables.
+- data_prepration.py: Preprocess the train data for training.
+- main.py: Depend on the user input, run the training or the prediction function.
+- util.py: Contains utility functions used during training or prediction.
+- simple_cnn.py: Build a model from scratch. 
+- cam.py: Build calss activation map.
 
 ## How to run the code
 
-
-python object_detection/legacy/train.py --logtostderr --train_dir=<path_to_the folder_for_saving_checkpoints> --pipeline_config_path=<path_to_config_file>
-
-
-Checkpoints will be saved in training folder. 
+python DeepLearning_Tensorflow/dogs_vs_cats/src/main.py 
+Checkpoints will be saved in  DeepLearning_Tensorflow/dogs_vs_cats/model folder. 
 
 ## Training results
 
