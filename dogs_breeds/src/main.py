@@ -12,27 +12,37 @@ data_placeholder   = tf.compat.v1.placeholder('float', [None, None])
 labels_placeholder = tf.compat.v1.placeholder('float32', [None, None])
 
 def define_model(in_config,is_training=False):
-
     data_reshaped = tf.reshape(data_placeholder,
                                shape=[-1, in_config.image_size, in_config.image_size, in_config.num_channels])
 
-    conv1 = keras.layers.Conv2D(filters=32, kernel_size=3, activation=tf.nn.relu)(data_reshaped)
-    conv1 = keras.layers.MaxPooling2D((2, 2))(conv1)
+    conv1 = keras.layers.Conv2D(filters=32, kernel_size=3, padding="same", activation=tf.nn.relu)(data_reshaped)
+    # conv1 = keras.layers.Conv2D(filters=64, kernel_size=3, padding="same", activation=tf.nn.relu)(conv1)
+    conv1 = keras.layers.MaxPooling2D(pool_size=(2,2), strides=(2,2))(conv1)
 
-    conv2 = keras.layers.Conv2D(64, 3, activation=tf.nn.relu)(conv1)
-    conv2 = keras.layers.MaxPooling2D((2, 2))(conv2)
+    conv2 = keras.layers.Conv2D(filters=32, kernel_size=3, padding="same", activation=tf.nn.relu)(conv1)
+    # conv2 = keras.layers.Conv2D(filters=128, kernel_size=3, padding="same", activation=tf.nn.relu)(conv2)
+    conv2 = keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(conv2)
 
-    conv3 = keras.layers.Conv2D(128, 3, activation=tf.nn.relu)(conv2)
-    conv3 = keras.layers.MaxPooling2D((2, 2))(conv3)
+    conv3 = keras.layers.Conv2D(filters=32, kernel_size=3, padding="same", activation=tf.nn.relu)(conv2)
+    # conv3 = keras.layers.Conv2D(filters=256, kernel_size=3, padding="same", activation=tf.nn.relu)(conv3)
+    # conv3 = keras.layers.Conv2D(filters=256, kernel_size=3, padding="same", activation=tf.nn.relu)(conv3)
+    conv3 = keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(conv3)
 
-    conv4 = keras.layers.Conv2D(128, 3, activation=tf.nn.relu)(conv3)
-    conv4 = keras.layers.MaxPooling2D((2, 2))(conv4)
+    # conv4 = keras.layers.Conv2D(512, kernel_size=3, padding="same", activation=tf.nn.relu)(conv3)
+    # conv4 = keras.layers.Conv2D(512, kernel_size=3, padding="same", activation=tf.nn.relu)(conv4)
+    # conv4 = keras.layers.Conv2D(512, kernel_size=3, padding="same", activation=tf.nn.relu)(conv4)
+    # conv4 = keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(conv4)
 
-    fc1 = keras.layers.Flatten()(conv4)
-    fc1 = keras.layers.Dense(128, activation=tf.nn.relu)(fc1)
+    # conv5 = keras.layers.Conv2D(filters=512, kernel_size=3, padding="same", activation=tf.nn.relu)(conv4)
+    # conv5 = keras.layers.Conv2D(filters=512, kernel_size=3, padding="same", activation=tf.nn.relu)(conv5)
+    # conv5 = keras.layers.Conv2D(filters=512, kernel_size=3, padding="same", activation=tf.nn.relu)(conv5)
+    # conv5 = keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(conv5)
 
+    fc1 = keras.layers.Flatten()(conv3)
+    # fc1 = keras.layers.Dense(units=4096, activation=tf.nn.relu)(fc1)
+
+    fc1 = keras.layers.Dense(units=128, activation=tf.nn.relu)(fc1)
     fc1 = keras.layers.Dropout(rate=0.5)(fc1)
-
     output = keras.layers.Dense(in_config.num_classes)(fc1)
 
     return output
@@ -40,6 +50,7 @@ def load_data(in_config):
     print("Loading data!")
     data_path = get_path(in_config.data_path_root, in_config.data_name)
     labels_path = get_path(in_config.data_path_root, in_config.labels_name)
+
     data = load(data_path)
     labels = load(labels_path)
     print("Preprocessing data!")
@@ -60,12 +71,14 @@ def train_neural_network(in_config):
     logits = define_model(in_config, True)
 
     cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels_placeholder))
-    optimizer = tf.train.AdamOptimizer().minimize(cost)
-
-    correct = tf.equal(tf.argmax(logits, 1), tf.argmax(labels_placeholder, 1))
+    optimizer = tf.train.AdamOptimizer(learning_rate=1e-3).minimize(cost)
+    #optimizer =tf.train.MomentumOptimizer(learning_rate=1e-1, momentum=0.7).minimize(cost)
+    y_pred = tf.nn.softmax(logits)
+    correct = tf.equal(tf.argmax(y_pred, 1), tf.argmax(labels_placeholder, 1))
     accuracy = tf.reduce_mean(tf.cast(correct, 'float32'))
 
     saver = tf.train.Saver()
+
 
     print("Start Training....t.!")
     with tf.Session() as sess:
@@ -81,20 +94,24 @@ def train_neural_network(in_config):
                 end = i + in_config.batch_size
                 batch_x = np.array(train_x[start:end])
                 batch_y = np.array(train_y[start:end])
-                _, c = sess.run([optimizer, cost], feed_dict={data_placeholder: batch_x, labels_placeholder: batch_y})
+
+                feed_dict_train = {data_placeholder: batch_x, labels_placeholder: batch_y}
+                feed_dict_validation = {data_placeholder: test_x, labels_placeholder: test_y}
+                _, c = sess.run([optimizer, cost], feed_dict=feed_dict_train)
                 epoch_loss += c
                 i += in_config.batch_size
-                acc_train = accuracy.eval(feed_dict={data_placeholder: batch_x, labels_placeholder: batch_y})
-                print("Epoch:", epoch + 1," Iteration:", int(i/in_config.batch_size) , " Train accuracy:", acc_train)
+                acc_train = sess.run(accuracy, feed_dict=feed_dict_train)
+                print("Epoch:", epoch + 1, " Iteration:", int(i / in_config.batch_size), " Train accuracy:", acc_train)
 
             print('Epoch', epoch + 1, 'completed out of', in_config.num_epochs, 'loss:', "{0:.3f}".format(epoch_loss) )
-            acc_test = accuracy.eval(feed_dict={data_placeholder: test_x, labels_placeholder: test_y})
+            acc_test = sess.run(accuracy, feed_dict=feed_dict_validation)
             print("Epoch:", epoch + 1, " Test accuracy:", acc_test)
 
-            print('saving model')
-            model_name = get_path(in_config.model_path_root,  "dog-breeds")
-            model_full_path = "{0}-epoch-{1:02d}-epoch_loss-{2:.3f}".format(model_name, epoch+1, epoch_loss)
-            saver.save(sess, model_full_path)
+            if in_config.save_model:
+                print('saving model')
+                model_name = get_path(in_config.model_path_root,  "dog-breeds")
+                model_full_path = "{0}-epoch-{1:02d}-epoch_loss-{2:.3f}".format(model_name, epoch+1, epoch_loss)
+                saver.save(sess, model_full_path)
 
 def print_main_menu():
     print('press d for data_preparation: ')

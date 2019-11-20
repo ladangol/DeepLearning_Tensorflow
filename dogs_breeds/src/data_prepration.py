@@ -23,6 +23,12 @@ def add_to_list(in_config, in_row, inout_data, inout_labels, inout_dict_categori
 
         image = cv2.imread(image_path)
         image = cv2.resize(image, (in_config.image_size, in_config.image_size))
+        if in_config.debug_image:
+            import matplotlib.pyplot as plt
+            plt.imshow(image, cmap=plt.cm.binary)
+            plt.xlabel(str(label))
+            plt.show()
+
         inout_data.append(image)
 
         # determine class
@@ -71,7 +77,7 @@ def prepare_data(in_config):
     lables_path = get_path(in_config.data_path_root, in_config.lable_index_map)
     write_labels(lables_path, inv_categories)
 
-    breeds_distribution_file = get_path(in_config.data_path_root, "breeds_distribution.json")
+    breeds_distribution_file = get_path(in_config.data_path_root, in_config.breeds_distribution)
     write_labels(breeds_distribution_file, breed_count)
 
     print("Data preparation completed!")
