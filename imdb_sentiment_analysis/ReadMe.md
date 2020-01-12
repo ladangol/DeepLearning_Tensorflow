@@ -1,6 +1,5 @@
 # IMDB sentiment analysis
-This project consists  of 2 sub-projects. One is a simple chatbot application based on naive bayes bag of words representation of words.
-The second project is using deep learning technology and word embeddings.
+This project is a simple chatbot application based on naive bayes bag of words representation of words.
 
 ## Folder Structure
 - imdb_sentiment_analysis
@@ -10,13 +9,6 @@ The second project is using deep learning technology and word embeddings.
       - main.py
       - tester.py
       - train.py
-    - word_embeddings
-      - main.py
-      - build_model.py
-      - build_word2vec_model.py
-      - data_prepration.py
-      - train.py
-      - config.py
 
   - data
      - data_prepration.py aftre cleaning and tokenizing the data of IMDB Dataset will generate the following files:
@@ -35,17 +27,9 @@ The second project is using deep learning technology and word embeddings.
     - main.py
     - tester.py
     - train.py
- - word_embedding
-    - main.py
-    - build_model.py
-    - build_word2vec_model.py
-    - data_prepration.py
-    - train.py
-   - config.py: Define global variables.
-  
+ 
 ## How to run the code
 python DeepLearning_Tensorflow/imdb_sentiment_analysis/src/naive_bayes/main.py 
-python DeepLearning_Tensorflow/imdb_sentiment_analysis/embeddings/main.py 
 
 Checkpoints will be saved in DeepLearning_Tensorflow/imdb_sentiment_analysis/model folder. 
 
@@ -60,16 +44,3 @@ User feedback integeration:
 User feedbacks are stored in a csv file for re-training the model.
 
 ![image](../imdb_sentiment_analysis/models/naive_bayse/user_Interaction.jpg)
-
-### Word embbeding project:
-The configuration of word2vec embbeding:
- - num_features = 10  # Word vector dimensionality
- - min_word_count = 40  # Minimum word count
- - num_workers = 4  # Number of threads to run in parallel
- - context_window = 10  # Context window size
- - downsampling = 1e-3  # Downsample setting for frequent words
-
-The two following figures show some of the anologies of word2vec word embbeding on IMDB dataset using the above cofiguration.
-
-![image](../imdb_sentiment_analysis/models/word_embbeding/word2vec_10features_40minwords_10context_1.jpg)
-![image](../imdb_sentiment_analysis/models/word_embbeding/word2vec_10features_40minwords_10context_2.jpg)
