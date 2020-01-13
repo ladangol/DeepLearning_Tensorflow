@@ -1,3 +1,20 @@
+    # improvement:
+
+    # OP1:
+    # add scheduler (we must have learning rate decay)
+    # Start LR = = 0.000001
+    # 30 epoch,
+    # start: epoch #10: LR = 0.00001 and every 5 epoch you remove 0.1 from LR
+
+    # OP2:
+    # if you do not using TL then you need to optimize kernel_initializer
+
+    # OP3:
+    # if you do not using TL then you need to optimize activation function
+
+    # OP4:
+    # model architecture modification: add layer then you have to do Op1 till Op3 for new model
+    
 from util import get_path, get_category
 
 import keras
