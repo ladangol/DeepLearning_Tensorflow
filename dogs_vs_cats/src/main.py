@@ -2,7 +2,7 @@ import config
 from util import get_path, plot_confusion_matrix, get_categories
 from data_prepration import prepare_data
 
-from simple_cnn import define_model, predict
+from simple_cnn import define_model, predict, step_decay
 from cam import define_model as define_cam_model, predict as cam_predict
 
 import keras
@@ -14,6 +14,7 @@ import numpy as np
 from numpy import load
 import time
 import sklearn.metrics as metrics
+from keras.callbacks import LearningRateScheduler
 
 def train( in_model, in_config):
     print("Loading data!")
@@ -28,7 +29,7 @@ def train( in_model, in_config):
     trainY = keras.utils.to_categorical(trainY, in_config.num_classes)
     testY = keras.utils.to_categorical(testY,  in_config.num_classes)
 
-    NAME = f'Cat-vs-dog-cnn-64x2-{int(time.time())}'
+    NAME = 'Cat-vs-dog-cnn-64x2-' + str(in_config.initial_lrate) + f'{int(time.time())}'
     file_path = "Model-{epoch:02d}-{val_acc:.3f}"  # unique file name that will include the epoch and the validation acc for that epoch
     check_point = ModelCheckpoint("Models/{}.model".format(file_path, monitor='val_acc', verbose=1, save_best_only=True,
                                                           mode='max'))  # saves only the best ones
@@ -37,8 +38,10 @@ def train( in_model, in_config):
     log_full_path = get_path(log_path, log_file_name)
     tensor_board = TensorBoard(log_dir=log_full_path)
 
+    lrate_scheduler = LearningRateScheduler(step_decay)
+
     early_stop = EarlyStopping(monitor='val_loss', patience=1, verbose=1, mode='auto')
-    callback_list = [check_point, tensor_board]
+    callback_list = [check_point, tensor_board, lrate_scheduler]
 
     # train the neural network
     in_model.fit(trainX, trainY, validation_data=(testX, testY), epochs=in_config.num_epochs,
