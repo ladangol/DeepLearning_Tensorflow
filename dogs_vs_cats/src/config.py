@@ -13,3 +13,9 @@ data_name = 'simple_dogs_vs_cats_photos.npy'
 labels_name = 'simple_dogs_vs_cats_labels.npy'
 confusion_matrix_file_name = "confusion_matrix.txt"
 confusion_matrix_plot_name = "confusion_matrix.png"
+# Test1:
+# initial_lrate = 0.0001
+# Test2:
+# initial_lrate = 0.001
+# Test3:
+initial_lrate = 0.01
