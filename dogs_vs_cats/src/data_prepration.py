@@ -1,17 +1,37 @@
 from util import get_path, get_index_by_image_name
 
 import random
-from os import listdir
 import numpy as np
-import os
-import cv2
 from numpy import save
+import os
+from os import listdir
+import cv2
+
+import keras
+from sklearn.model_selection import train_test_split
+
+def split_and_save(in_config, data,labels):
+    print("Preprocessing data!")
+    (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, stratify=labels, random_state=42, shuffle=True)
+
+    trainY = keras.utils.to_categorical(trainY, in_config.num_classes)
+    testY = keras.utils.to_categorical(testY,  in_config.num_classes)
+
+    # save the reshaped photos
+    trainX_path = get_path(in_config.data_path_root, in_config.trainX_path)
+    save(trainX_path, trainX)
+
+    trainY_path = get_path(in_config.data_path_root, in_config.trainY_path)
+    save(trainY_path, trainY)
+
+    testX_path = get_path(in_config.data_path_root, in_config.testX_path)
+    save(testX_path, testX)
+
+    testY_path = get_path(in_config.data_path_root, in_config.testY_path)
+    save(testY_path, testY)
 
 def prepare_data(in_data_dir, in_config):
     print("Start preparing data!")
-    in_output_data_path = get_path(in_config.data_path_root, in_config.data_name)
-    in_output_labels_path = get_path(in_config.data_path_root, in_config.labels_name)
-
     image_paths = []
 
     # enumerate files in the directory
@@ -42,9 +62,7 @@ def prepare_data(in_data_dir, in_config):
     data = np.array(data, dtype="float") / 255.0
     labels = np.array(labels)
 
-    # save the reshaped photos
-    save(in_output_data_path, data)
-    save(in_output_labels_path, labels)
+    split_and_save(in_config, data, labels)
 
     print("Data preparation completed!")
     return data, labels
