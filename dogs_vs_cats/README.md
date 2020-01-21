@@ -89,4 +89,20 @@ Using keras pre-trained model of VGG_16.
 ![image](../dogs_vs_cats/models/cam_vgg_16/cam_dog_5.jpg)
 
 
+## Hyper Parameter Tuning:
 
+In order to increase the accuracy of our model, we did a grid search on some of the parameters such as learning rate, and kernel initializer functions.
+
+We also introduced a learning rate scheduler that as the epoch increases, slows down the learning rate so the model converges. Our initial experiments showed that with a learning rate of 0.1 the model diverges and do not learn anything as shown below:
+
+
+In the next experiment we consider the initial learning rates of [0.01, 0.001, 0.0001]. After the epoch ?, the learning rate scheduler reduces the learning rate by 0.1 every 5 epochs.
+
+The other hyper parameters that we investigate:
+
+Initializer function :  []
+Activation function: [tanh, leakrelu, relu]
+bias:
+
+
+The results show that …
