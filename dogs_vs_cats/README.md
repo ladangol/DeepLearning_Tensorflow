@@ -116,7 +116,7 @@ Learning rates: [0.01, 0.001]
 
 Activation function: [swish, tanh, leakyrelu, relu]
 
-kernel initializer: ['he_uniform','glorot_uniform','lecun_uniform']
+kernel initializer: [he_uniform, glorot_uniform, lecun_uniform]
 
 Bias initializer: [0.0, 0.01]
 
@@ -144,7 +144,7 @@ Top 5 results:
 |LR_0.01-KI_lecun_uniform-AC_ReLU-BI_0.01|	0.89|	0.89	|0.89|	0.89|
 |LR_0.01-KI_he_uniform-AC_ReLU-BI_0.0	|0.89	|0.89	|0.89	|0.89|
 
-LR: learning rate
-KI: kernel initializer
-AC: Activation function
+LR: learning rate, 
+KI: kernel initializer, 
+AC: Activation function, 
 BI: Bias initializer
