@@ -167,6 +167,30 @@ def main():
                         if model != None:
                             train(model, config, training_data)
 
+        grid_serch_result_path = get_path(config.data_path_root, 'all_test.txt')
+        grid_search = {}
+        with open(grid_serch_result_path, "r") as content:
+            grid_search = json.load(content)
+
+        new_dict = {'name': [], 'accuracy': [], 'precision': [], 'recall': [], 'f1-score': []}
+        for key, val in grid_search.items():
+            new_dict.get('name').append(key)
+            new_dict.get('accuracy').append(val.get('accuracy'))
+            weighted_avg_dict = val.get('weighted avg')
+            new_dict.get('precision').append(weighted_avg_dict.get('precision'))
+            new_dict.get('recall').append(weighted_avg_dict.get('recall'))
+            new_dict.get('f1-score').append(weighted_avg_dict.get('f1-score'))
+        df = pd.DataFrame.from_dict(new_dict)
+        sorted_df = df.sort_values('f1-score')
+        # find max frequency of the gs with accuracy about 85
+        # start filtering with thoes have maximum frequency
+        worst_results = sorted_df.iloc[0:5, :]
+        best_results = sorted_df.iloc[-5:, :]
+        result_full_path = get_path(config.data_path_root, 'worth_results.csv')
+        worst_results.to_csv(result_full_path)
+        result_full_path = get_path(config.data_path_root, 'best_results.csv')
+        best_results.to_csv(result_full_path)
+
     elif action == 'p':
         print_prediction_menu()
         action = input()
