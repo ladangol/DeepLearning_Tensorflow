@@ -94,15 +94,33 @@ Using keras pre-trained model of VGG_16.
 In order to increase the accuracy of our model, we did a grid search on some of the parameters such as learning rate, and kernel initializer functions.
 
 We also introduced a learning rate scheduler that as the epoch increases, slows down the learning rate so the model converges. Our initial experiments showed that with a learning rate of 0.1 the model diverges and do not learn anything as shown below:
+with the learning rates [0.1(orange), 0.01(dark blue), 0.001(red), 0001(light blue)]
+
+Training logs of grid serach on 4 learning rates:
+![image](../dogs_vs_cats/models/simple-cnn/grid_search_lr/4_LR.jpg)
+
+The classification results of learning rate 0.1:
+
+![image](../dogs_vs_cats/models/simple-cnn/grid_search_lr/confusion_matrix-E15lr0.1.png)
 
 
-In the next experiment we consider the initial learning rates of [0.01, 0.001, 0.0001]. After the epoch ?, the learning rate scheduler reduces the learning rate by 0.1 every 5 epochs.
+Training logs after removing the learning rate 0.1:
+![image](../dogs_vs_cats/models/simple-cnn/grid_search_lr/3_LR.jpg)
+
+
+In the next experiment we consider the initial learning rates of [0.01, 0.001]. After the epoch ?, the learning rate scheduler reduces the learning rate by 0.1 every 5 epochs.
 
 The other hyper parameters that we investigate:
 
-Initializer function :  []
-Activation function: [tanh, leakrelu, relu]
-bias:
+Learning rates: [0.01, 0.001]
 
+Activation function: [swish, tanh, leakyrelu, relu]
 
-The results show that …
+kernel initializer: ['he_uniform','glorot_uniform','lecun_uniform']
+
+Bias initializer: [0.0, 0.01]
+
+Training logs of grid serach:
+
+![image](../dogs_vs_cats/models/simple-cnn/grid_search_hp/HR.jpg)
+
