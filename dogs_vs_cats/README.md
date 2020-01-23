@@ -124,3 +124,27 @@ Training logs of grid serach:
 
 ![image](../dogs_vs_cats/models/simple-cnn/grid_search_hp/HR.jpg)
 
+Worst 5 results: 
+
+|HP Search	|Accuracy	|Precision	|Recall	|F1-Score|
+|------ | --------|------ | --------|------ | 
+|LR_0.01-KI_he_uniform-AC_Tanh-BI_0.01	|0.5	|0.25	|0.5|	0.33 |
+|LR_0.01-KI_lecun_uniform-AC_Tanh-BI_0.0|	0.5|	0.25|	0.5	| 0.33 |
+|LR_0.01-KI_he_uniform-AC_Tanh-BI_0.0	|0.5	|0.25|	0.5|	0.33 |
+|LR_0.01-KI_he_uniform-AC_LeakyReLU-BI_0.01|	0.5	|0.25	|0.5 |	0.33 |
+|LR_0.01-KI_he_uniform-AC_LeakyReLU-BI_0.0	|0.5	|0.25 |	0.5 |	0.33 |
+
+Top 5 results:
+
+|HP Search	|Accuracy	|Precision	|Recall	|F1-Score|
+|------ | --------|------ | --------|------ | 
+|LR_0.01-KI_glorot_uniform-AC_LeakyReLU-BI_0.01|	0.87 |	0.87	|0.87|	0.87|
+|LR_0.01-KI_he_uniform-AC_ReLU-BI_0.01|	0.88 |	0.88|	0.88|	0.88|
+|LR_0.01-KI_lecun_uniform-AC_ReLU-BI_0.0|	0.88	|0.88	|0.88	|0.88|
+|LR_0.01-KI_lecun_uniform-AC_ReLU-BI_0.01|	0.89|	0.89	|0.89|	0.89|
+|LR_0.01-KI_he_uniform-AC_ReLU-BI_0.0	|0.89	|0.89	|0.89	|0.89|
+
+LR: learning rate
+KI: kernel initializer
+AC: Activation function
+BI: Bias initializer
