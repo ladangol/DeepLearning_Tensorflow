@@ -53,7 +53,23 @@ def train( in_model, in_config, training_data):
     log_path = get_path(config.model_path_root, 'logs')
     log_file_name = '{}'.format(NAME)
     log_full_path = get_path(log_path, log_file_name)
-    tensor_board = TensorBoard(log_dir=log_full_path)
+    # tensor_board = TensorBoard(log_dir=log_full_path)
+    # save class labels to disk to color data points in TensorBoard accordingly
+    from os import makedirs
+    from os.path import exists, join
+    if not exists("Models/logs"):
+        makedirs("Models/logs")
+
+    with open('Models/logs/metadata.tsv', 'w') as f:
+        np.savetxt(f, np.zeros(len(testY)))
+
+    tensor_board = TensorBoard(log_dir=log_full_path,
+                              batch_size=in_config.batch_size,
+                              embeddings_freq=1,
+                              embeddings_layer_names=['features'],
+                              embeddings_metadata='metadata.tsv',
+                              embeddings_data=testX)
+
     log_file_full_path = "Models/logs/" + NAME + ".csv"
     csv_logger = CSVLogger(log_file_full_path, append=True, separator=';')
 
@@ -61,8 +77,11 @@ def train( in_model, in_config, training_data):
 
     early_stop = EarlyStopping(monitor='val_loss', patience=1, verbose=1, mode='auto')
 
-    # callback_list = [tensor_board, lrate_scheduler, check_point, csv_logger]
-    callback_list = [tensor_board, lrate_scheduler, csv_logger]
+    callback_list = []
+    if config.display_plot == True:
+         callback_list = [tensor_board, lrate_scheduler, check_point, csv_logger]
+    else:
+        callback_list = [tensor_board, lrate_scheduler, csv_logger]
 
     # train the neural network
     history = in_model.fit(trainX, trainY, validation_data=(testX, testY), epochs=in_config.num_epochs,
@@ -118,6 +137,7 @@ def print_prediction_menu():
     print('press e for exit: ')
 
 def main():
+
     print_main_menu()
     action = input()
     if action == 'd':
@@ -137,10 +157,10 @@ def main():
 
         # initial_lrate = [0.1,0.01,0.001,0.0001]
         initial_lrate_list = [0.01,0.001]
-        activation_list = ['swish','LeakyReLU','ReLU','Tanh']
+        activation_list = ['ReLU', 'swish','LeakyReLU','Tanh']
         kernel_initializer_list = ['he_uniform','glorot_uniform','lecun_uniform']
         bias_initializer_list = [0.0, 0.01]
-        epoch = 30
+        epoch = 1
         for lr in initial_lrate_list:
             for activation in activation_list:
                 for kernel in kernel_initializer_list:
@@ -166,6 +186,8 @@ def main():
                             model = define_cam_model(config.num_classes, config.image_size)
                         if model != None:
                             train(model, config, training_data)
+
+
 
         grid_serch_result_path = get_path(config.data_path_root, 'all_test.txt')
         grid_search = {}
