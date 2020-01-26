@@ -16,6 +16,76 @@ import sklearn.metrics as metrics
 from keras.callbacks import LearningRateScheduler, CSVLogger
 import pandas as pd
 import json
+
+class GenerateModel:
+    def __init__(self,model_type):
+        self.fActive = self.generate_model(model_type) # mapping: string --> variable = function name
+
+    def generate_model(self, model_type):
+        switcher = {
+            's': define_model,
+            'c': define_cam_model
+        }
+
+        current_model = switcher.get(model_type.lower(), None)
+
+        if current_model == None:
+            raise AssertionError("model_type is invalid!")
+
+        return current_model
+
+    def run_function(self, config):
+        return  self.fActive(config)
+
+class GenerateTraner:
+    def __init__(self,training_type):
+        self.fActive = self.generate_trainer(training_type) # mapping: string --> variable = function name
+
+    def generate_trainer(self, training_type):
+        switcher = {
+            'gs': grind_serach,
+            't': train
+        }
+
+        trainer = switcher.get(training_type.lower(), None)
+
+        if trainer == None:
+            raise AssertionError("training_type is invalid!")
+
+        return trainer
+
+    def run_function(self, in_model_generater, in_config, training_data):
+        self.fActive(in_model_generater, in_config, training_data)
+
+class GeneratePredicter:
+    def __init__(self, predicting_type):
+        self.fActive = self.generate_predicter(predicting_type) # mapping: string --> variable = function name
+
+    def generate_predicter(self, predicting_type):
+        switcher = {
+            'p': self.predict,
+            'c': self.cam_predict
+        }
+
+        predicter = switcher.get(predicting_type.lower(), None)
+
+        if predicter == None:
+            raise AssertionError("predicting_type is invalid!")
+
+        return predicter
+
+    def predict(self):
+            test_model_path = get_path(config.model_path_root, 'no_cam\\Model-60-0.820.model')
+            test_data_path = get_path(config.data_path_root, 'test')
+            predict(test_data_path, test_model_path, config)
+    def cam_predict(self, config):
+        test_model_path = get_path(config.model_path_root, 'Vgg_16_Cam\\Model-02-0.978.model')
+        test_data_path = get_path(config.data_path_root, 'test\\cam')
+        cam_predict(test_data_path, test_model_path, config.image_size)
+
+    def run_function(self, config):
+        self.fActive(config)
+
 class TrainingData:
     def __init__(self, in_config):
 
@@ -36,7 +106,61 @@ class TrainingData:
         testY_path = get_path(root, in_config.testY_path)
         self.testY  = load(testY_path)
 
-def train( in_model, in_config, training_data):
+def grind_serach(in_model_generater,in_config, training_data):
+    if in_model_generater == None:
+        return
+    config_to_string = generate_current_config_to_string(config)
+
+    # initial_lrate = [0.1,0.01,0.001,0.0001]
+    initial_lrate_list = [0.01, 0.001]
+    activation_list = ['ReLU', 'swish', 'LeakyReLU', 'Tanh']
+    kernel_initializer_list = ['he_uniform', 'glorot_uniform', 'lecun_uniform']
+    bias_initializer_list = [0.0, 0.01]
+    epoch = 1
+    for lr in initial_lrate_list:
+        for activation in activation_list:
+            for kernel in kernel_initializer_list:
+                for bias in bias_initializer_list:
+                    config.num_epochs = epoch
+                    config.initial_lrate = lr
+                    config.kernel_initializer = kernel
+                    config.activation = activation
+                    config.bias_initializer = bias
+                    config.display_plot = False
+
+                    config_to_string = generate_current_config_to_string(config)
+                    config.confusion_matrix_detailed_file_name = "confusion_matrix_detailed" + config_to_string + ".txt"
+                    config.confusion_matrix_file_name = "confusion_matrix" + config_to_string + ".txt"
+                    config.confusion_matrix_plot_name = "confusion_matrix" + config_to_string + ".png"
+
+                    train(in_model_generater, config, training_data)
+
+    grid_serch_result_path = get_path(config.data_path_root, 'all_test.txt')
+    grid_search = {}
+    with open(grid_serch_result_path, "r") as content:
+        grid_search = json.load(content)
+
+    new_dict = {'name': [], 'accuracy': [], 'precision': [], 'recall': [], 'f1-score': []}
+    for key, val in grid_search.items():
+        new_dict.get('name').append(key)
+        new_dict.get('accuracy').append(val.get('accuracy'))
+        weighted_avg_dict = val.get('weighted avg')
+        new_dict.get('precision').append(weighted_avg_dict.get('precision'))
+        new_dict.get('recall').append(weighted_avg_dict.get('recall'))
+        new_dict.get('f1-score').append(weighted_avg_dict.get('f1-score'))
+    df = pd.DataFrame.from_dict(new_dict)
+    sorted_df = df.sort_values('f1-score')
+    # find max frequency of the gs with accuracy about 85
+    # start filtering with thoes have maximum frequency
+    worst_results = sorted_df.iloc[0:5, :]
+    best_results = sorted_df.iloc[-5:, :]
+    result_full_path = get_path(config.data_path_root, 'worth_results.csv')
+    worst_results.to_csv(result_full_path)
+    result_full_path = get_path(config.data_path_root, 'best_results.csv')
+    best_results.to_csv(result_full_path)
+
+
+def train( in_model_generater, in_config, training_data):
     if not isinstance(training_data, TrainingData):
         raise AssertionError("training_data should be provided as a TrainingData!")
 
@@ -44,6 +168,8 @@ def train( in_model, in_config, training_data):
     testX  = training_data.testX
     trainY = training_data.trainY
     testY = training_data.testY
+
+    in_model = in_model_generater.run_function(config)
 
     config_to_string = generate_current_config_to_string(config)
     NAME = 'Cat-vs-dog' + config_to_string + f'{int(time.time())}'
@@ -79,7 +205,7 @@ def train( in_model, in_config, training_data):
 
     callback_list = []
     if config.display_plot == True:
-         callback_list = [tensor_board, lrate_scheduler, check_point, csv_logger]
+         callback_list = [tensor_board, lrate_scheduler, check_point,csv_logger]
     else:
         callback_list = [tensor_board, lrate_scheduler, csv_logger]
 
@@ -128,7 +254,12 @@ def print_main_menu():
 
 def print_train_menu():
     print('press t for train: ')
-    print('press c for cam train: ')
+    print('press gs for grid search train: ')
+    print('press e for exit: ')
+
+def print_model_menu():
+    print('press s for simple cnn model: ')
+    print('press c for cam model: ')
     print('press e for exit: ')
 
 def print_prediction_menu():
@@ -137,96 +268,42 @@ def print_prediction_menu():
     print('press e for exit: ')
 
 def main():
-
     print_main_menu()
-    action = input()
-    if action == 'd':
+    general_action = input()
+    if general_action == 'e':
+        return
+
+    if general_action == 'd':
         # define location of dataset
         train_data_path = get_path(config.data_path_root, 'train')
         prepare_data(train_data_path, config)
-    elif action == 'e':
         return
-    elif action == 't':
+
+    if general_action == 't':
         print_train_menu()
-        action = input()
-        if (action == "\n" or action == ""):
-            action = input()
+        train_action = input()
+        if (train_action == "\n" or train_action == ""):
+            train_action = input()
 
-        config_to_string = generate_current_config_to_string(config)
-        training_data =  TrainingData(config)
+        trainer = GenerateTraner(train_action)
+        print_model_menu()
+        model_action = input()
+        if (model_action == "\n" or model_action == ""):
+            model_action = input()
 
-        # initial_lrate = [0.1,0.01,0.001,0.0001]
-        initial_lrate_list = [0.01,0.001]
-        activation_list = ['ReLU', 'swish','LeakyReLU','Tanh']
-        kernel_initializer_list = ['he_uniform','glorot_uniform','lecun_uniform']
-        bias_initializer_list = [0.0, 0.01]
-        epoch = 1
-        for lr in initial_lrate_list:
-            for activation in activation_list:
-                for kernel in kernel_initializer_list:
-                    for bias in bias_initializer_list:
-                        config.num_epochs = epoch
-                        config.initial_lrate = lr
-                        config.kernel_initializer = kernel
-                        config.activation = activation
-                        config.bias_initializer = bias
-                        config.display_plot = False
+        model_generater = GenerateModel(model_action)
+        training_data = TrainingData(config)
+        trainer.run_function(model_generater, config, training_data)
 
-                        config_to_string = generate_current_config_to_string(config)
-                        config.confusion_matrix_detailed_file_name = "confusion_matrix_detailed" + config_to_string +".txt"
-                        config.confusion_matrix_file_name = "confusion_matrix" + config_to_string +".txt"
-                        config.confusion_matrix_plot_name = "confusion_matrix" + config_to_string +".png"
-                        model = None
+        return
 
-                        if action == 't':
-                            model = define_model(config)
-                        elif action == 'e':
-                            return
-                        elif action == 'c':
-                            model = define_cam_model(config.num_classes, config.image_size)
-                        if model != None:
-                            train(model, config, training_data)
-
-
-
-        grid_serch_result_path = get_path(config.data_path_root, 'all_test.txt')
-        grid_search = {}
-        with open(grid_serch_result_path, "r") as content:
-            grid_search = json.load(content)
-
-        new_dict = {'name': [], 'accuracy': [], 'precision': [], 'recall': [], 'f1-score': []}
-        for key, val in grid_search.items():
-            new_dict.get('name').append(key)
-            new_dict.get('accuracy').append(val.get('accuracy'))
-            weighted_avg_dict = val.get('weighted avg')
-            new_dict.get('precision').append(weighted_avg_dict.get('precision'))
-            new_dict.get('recall').append(weighted_avg_dict.get('recall'))
-            new_dict.get('f1-score').append(weighted_avg_dict.get('f1-score'))
-        df = pd.DataFrame.from_dict(new_dict)
-        sorted_df = df.sort_values('f1-score')
-        # find max frequency of the gs with accuracy about 85
-        # start filtering with thoes have maximum frequency
-        worst_results = sorted_df.iloc[0:5, :]
-        best_results = sorted_df.iloc[-5:, :]
-        result_full_path = get_path(config.data_path_root, 'worth_results.csv')
-        worst_results.to_csv(result_full_path)
-        result_full_path = get_path(config.data_path_root, 'best_results.csv')
-        best_results.to_csv(result_full_path)
-
-    elif action == 'p':
+    if general_action == 'p':
         print_prediction_menu()
-        action = input()
-        if (action == "\n" or action == ""):
-            action = input()
-        if action == 'p':
-            test_model_path = get_path(config.model_path_root, 'no_cam\\Model-60-0.820.model')
-            test_data_path = get_path(config.data_path_root, 'test')
-            predict(test_data_path, test_model_path, config)
-        elif action == 'e':
-            return
-        elif action == 'c':
-            test_model_path = get_path(config.model_path_root, 'Vgg_16_Cam\\Model-02-0.978.model')
-            test_data_path = get_path(config.data_path_root, 'test\\cam')
-            cam_predict(test_data_path, test_model_path, config.image_size)
+        predic_action = input()
+        if (predic_action == "\n" or predic_action == ""):
+            predic_action = input()
+        predicter = GeneratePredicter(predic_action)
+        predicter.run_function(config)
+        return
 
 main()

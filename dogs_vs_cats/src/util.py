@@ -19,7 +19,7 @@ def get_index(in_config, in_value):
     return -1
 
 def get_index_by_image_name(in_config, in_file_name):
-    for key, val in in_config.dict_categories:
+    for key, val in in_config.dict_categories.items():
         if in_file_name.lower().startswith(val.lower()):
             return key
     return -1

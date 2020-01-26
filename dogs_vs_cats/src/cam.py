@@ -16,29 +16,32 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # define cnn model
-def define_model(in_num_classes, in_image_size):
-	if in_image_size != 224:
-          print("Invalid image size for VGG 16!")
-          return None
+def define_model(in_config):
+    in_image_size = in_config.image_size
+    in_num_classes = in_config.num_classes
+    if in_image_size != 224:
+        print("Invalid image size for VGG 16!")
+        return None
 
-	# load model
-	model = VGG16(include_top=False, input_shape=(in_image_size, in_image_size, 3))
-	# mark loaded layers as not trainable
-	for layer in model.layers:
-		layer.trainable = True
-	# add new classifier layers
-	GAP = AveragePooling2D(14,14)(model.layers[-2].output)
-	flat1 = Flatten()(GAP)
-	output = Dense(in_num_classes, activation='softmax')(flat1)
-	# define new model
-	model = Model(inputs=model.inputs, outputs=output)
-	# compile model
-	opt = SGD(lr=0.001, momentum=0.9)
+    # load model
+    model = VGG16(include_top=False, input_shape=(in_image_size, in_image_size, 3))
+    # mark loaded layers as not trainable
+    for layer in model.layers:
+        layer.trainable = True
+
+    # add new classifier layers
+    GAP = AveragePooling2D(14,14)(model.layers[-2].output)
+    flat1 = Flatten()(GAP)
+    output = Dense(in_num_classes, activation='softmax')(flat1)
+    # define new model
+    model = Model(inputs=model.inputs, outputs=output)
+    # compile model
+    opt = SGD(lr=0.001, momentum=0.9)
 
     # binary_accuracy or categorical_accuracy
-	model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
-	model .summary()
-	return model
+    model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+    model .summary()
+    return model
 
 def predict(in_data_path, in_model_path, in_image_size):
     model = keras.models.load_model(in_model_path)

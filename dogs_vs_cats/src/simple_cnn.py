@@ -89,7 +89,7 @@ def add_swish_activation():
 
 def get_activation(in_config):
     switcher = {
-            'ReLU': ReLU(max_value=None, negative_slope=0.0, threshold=0.0),
+            'ReLU': 'relu', #"ReLU(max_value=None, negative_slope=0.0, threshold=0.0),
             'Tanh': "tanh",
             'LeakyReLU': LeakyReLU(alpha=0.3),
             'PReLU': PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=None),
@@ -118,7 +118,6 @@ def define_model(in_config):
 
     model.add(Flatten())
     model.add(Dense(128, activation=activation, kernel_initializer=kernel_init, bias_initializer=bias, name = 'features'))
-
     model.add(Dropout(0.5))
 
     model.add(Dense(in_config.num_classes, activation="softmax"))
