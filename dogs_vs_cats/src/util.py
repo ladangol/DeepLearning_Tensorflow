@@ -19,7 +19,7 @@ def get_index(in_config, in_value):
     return -1
 
 def get_index_by_image_name(in_config, in_file_name):
-    for key, val in in_config.dict_categories:
+    for key, val in in_config.dict_categories.items():
         if in_file_name.lower().startswith(val.lower()):
             return key
     return -1
@@ -31,7 +31,7 @@ def get_categories(in_config):
 def plot_confusion_matrix(in_confusion_matrix, in_config, normalize=False):
     classes = list(in_config.dict_categories.values())
 
-    plt.figure(figsize = (5,5))
+    fig = plt.figure(figsize = (5,5))
     plt.imshow(in_confusion_matrix, interpolation='nearest', cmap=plt.cm.Blues)
     plt.title('Confusion matrix')
     plt.colorbar()
@@ -53,11 +53,32 @@ def plot_confusion_matrix(in_confusion_matrix, in_config, normalize=False):
     plt.tight_layout()
     plt.ylabel('Actual')
     plt.xlabel('Predicted')
-    confusion_matrix_plot_name = get_path('Models', in_config.confusion_matrix_plot_name)
+
+    confusion_matrix_plot_name = get_path(get_path('Models','logs'), in_config.confusion_matrix_plot_name)
     plt.savefig(confusion_matrix_plot_name)
 
-    plt.show()
+    if in_config.display_plot:
+        plt.show()
+    plt.close(fig)
 
-    confusion_matrix_file_name = get_path('Models', in_config.confusion_matrix_file_name)
+    confusion_matrix_file_name = get_path(get_path('Models','logs'), in_config.confusion_matrix_file_name)
     with open(confusion_matrix_file_name, 'w') as f:
         f.write(np.array2string(in_confusion_matrix, separator=', '))
+
+
+def generate_current_config_to_string(in_config):
+        return "-E_"   + str(in_config.num_epochs) + \
+              "-LR_" + str(in_config.initial_lrate) + \
+              "-KI_" + str(in_config.kernel_initializer) + \
+              "-AC_" + str(in_config.activation) + \
+              "-BI_" + str(in_config.bias_initializer) + \
+              "-"
+
+
+
+
+
+
+
+
+

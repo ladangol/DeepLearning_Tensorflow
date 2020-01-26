@@ -1,4 +1,4 @@
-conda activate tensorflow-gpu-3
+conda activate tensorflow-v1-gpu
 
 cd D:\DeepLearning_Tensorflow\dogs_vs_cats
 

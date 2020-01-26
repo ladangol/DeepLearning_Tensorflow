@@ -1,63 +1,29 @@
 import config
-from util import get_path, plot_confusion_matrix, get_categories
+from util import get_path
 from data_prepration import prepare_data
+import factory as gnerater
 
-from simple_cnn import define_model, predict, step_decay
-from cam import define_model as define_cam_model, predict as cam_predict
-
-import keras
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
-
-from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
-import numpy as np
 from numpy import load
-import time
-import sklearn.metrics as metrics
-from keras.callbacks import LearningRateScheduler
 
-def train( in_model, in_config):
-    print("Loading data!")
-    data_path = get_path(in_config.data_path_root, in_config.data_name)
-    labels_path = get_path(in_config.data_path_root, in_config.labels_name)
-    data = load(data_path)
-    labels = load(labels_path)
+class TrainingData:
+    def __init__(self, in_config):
 
-    print("Preprocessing data!")
-    (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=42)
+        print("Loading x_train data!")
+        root = in_config.data_path_root
+        x_train_path = get_path(root, in_config.trainX_path)
+        self.x_train = load(x_train_path)
 
-    trainY = keras.utils.to_categorical(trainY, in_config.num_classes)
-    testY = keras.utils.to_categorical(testY,  in_config.num_classes)
+        print("Loading y_train data!")
+        y_train_path = get_path(root, in_config.trainY_path)
+        self.y_train = load(y_train_path)
 
-    NAME = 'Cat-vs-dog-cnn-64x2-' + str(in_config.initial_lrate) + f'{int(time.time())}'
-    file_path = "Model-{epoch:02d}-{val_acc:.3f}"  # unique file name that will include the epoch and the validation acc for that epoch
-    check_point = ModelCheckpoint("Models/{}.model".format(file_path, monitor='val_acc', verbose=1, save_best_only=True,
-                                                          mode='max'))  # saves only the best ones
-    log_path = get_path(config.model_path_root, 'logs')
-    log_file_name = '{}'.format(NAME)
-    log_full_path = get_path(log_path, log_file_name)
-    tensor_board = TensorBoard(log_dir=log_full_path)
+        print("Loading x_test data!")
+        x_test_path = get_path(root, in_config.testX_path)
+        self.x_test = load(x_test_path)
 
-    lrate_scheduler = LearningRateScheduler(step_decay)
-
-    early_stop = EarlyStopping(monitor='val_loss', patience=1, verbose=1, mode='auto')
-    callback_list = [check_point, tensor_board, lrate_scheduler]
-
-    # train the neural network
-    in_model.fit(trainX, trainY, validation_data=(testX, testY), epochs=in_config.num_epochs,
-                 batch_size=in_config.batch_size, verbose=1, callbacks=callback_list)
-
-    # evaluate the network
-    print("[INFO] evaluating network...")
-    predictions = in_model.predict(testX, batch_size=in_config.batch_size)
-    print(classification_report(testY.argmax(axis=1), predictions.argmax(axis=1), target_names=get_categories(in_config)))
-    print("")
-
-    y_pred_classes = np.argmax(predictions, axis=1)
-    y_true = np.argmax(testY, axis=1)
-    confusion_matrix = metrics.confusion_matrix(y_true=y_true, y_pred=y_pred_classes)
-
-    plot_confusion_matrix(confusion_matrix, in_config)
+        print("Loading y_test data!")
+        y_test_path = get_path(root, in_config.testY_path)
+        self.y_test  = load(y_test_path)
 
 def print_main_menu():
     print('press d for data_preparation: ')
@@ -67,7 +33,12 @@ def print_main_menu():
 
 def print_train_menu():
     print('press t for train: ')
-    print('press c for cam train: ')
+    print('press gs for grid search train: ')
+    print('press e for exit: ')
+
+def print_model_menu():
+    print('press s for simple cnn model: ')
+    print('press c for cam model: ')
     print('press e for exit: ')
 
 def print_prediction_menu():
@@ -77,42 +48,41 @@ def print_prediction_menu():
 
 def main():
     print_main_menu()
-    action = input()
-    if action == 'd':
+    general_action = input()
+    if general_action == 'e':
+        return
+
+    if general_action == 'd':
         # define location of dataset
         train_data_path = get_path(config.data_path_root, 'train')
         prepare_data(train_data_path, config)
-    elif action == 'e':
         return
-    elif action == 't':
-        print_train_menu()
-        action = input()
-        if (action == "\n" or action == ""):
-            action = input()
-        model = None
-        if action == 't':
-            model = define_model(config.num_classes, config.image_size)
-        elif action == 'e':
-            return
-        elif action == 'c':
-            model = define_cam_model(config.num_classes, config.image_size)
-        if model != None:
-            train(model, config)
 
-    elif action == 'p':
+    if general_action == 't':
+        print_train_menu()
+        train_action = input()
+        if (train_action == "\n" or train_action == ""):
+            train_action = input()
+
+        trainer = gnerater.GenerateTraner(train_action)
+        print_model_menu()
+        model_action = input()
+        if (model_action == "\n" or model_action == ""):
+            model_action = input()
+
+        model_generater = gnerater.GenerateModel(model_action)
+        training_data = TrainingData(config)
+        trainer.run_function(model_generater, config, training_data)
+
+        return
+
+    if general_action == 'p':
         print_prediction_menu()
-        action = input()
-        if (action == "\n" or action == ""):
-            action = input()
-        if action == 'p':
-            test_model_path = get_path(config.model_path_root, 'no_cam\\Model-60-0.820.model')
-            test_data_path = get_path(config.data_path_root, 'test')
-            predict(test_data_path, test_model_path, config)
-        elif action == 'e':
-            return
-        elif action == 'c':
-            test_model_path = get_path(config.model_path_root, 'Vgg_16_Cam\\Model-02-0.978.model')
-            test_data_path = get_path(config.data_path_root, 'test\\cam')
-            cam_predict(test_data_path, test_model_path, config.image_size)
+        predic_action = input()
+        if (predic_action == "\n" or predic_action == ""):
+            predic_action = input()
+        predicter = gnerater.GeneratePredicter(predic_action)
+        predicter.run_function(config)
+        return
 
 main()
