@@ -83,7 +83,7 @@ def add_swish_activation():
     from keras.layers import Activation
     get_custom_objects().update({'swish': Activation(swish_activation)})
 
-def get_activation(in_config):
+def get_activation(config):
     switcher = {
             'ReLU': 'relu', #"ReLU(max_value=None, negative_slope=0.0, threshold=0.0),
             'Tanh': "tanh",
@@ -91,14 +91,14 @@ def get_activation(in_config):
             'PReLU': PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=None),
             'swish': "swish"
         }
-    return switcher.get(in_config.activation, "invalid")
+    return switcher.get(config.activation, "invalid")
 
-def define_model(in_config):
+def define_model(config):
     add_swish_activation()
     model = Sequential()
-    activation  = get_activation(in_config)
-    kernel_init = in_config.kernel_initializer
-    bias        = keras.initializers.Constant(value=in_config.bias_initializer)
+    activation  = get_activation(config)
+    kernel_init = config.kernel_initializer
+    bias        = keras.initializers.Constant(value=config.bias_initializer)
 
     model.add(Conv2D(32, (3, 3), activation=activation, kernel_initializer=kernel_init, bias_initializer=bias, padding='same', input_shape=(in_config.image_size, in_config.image_size, 3)))
     model.add(MaxPooling2D((2, 2)))
@@ -124,19 +124,19 @@ def define_model(in_config):
     model .summary()
     return model
 
-def predict(in_data_path, in_model_path, in_config ):
-    image_size = in_config.image_size
-    model = keras.models.load_model(in_model_path)
-    for image_name in os.listdir(in_data_path):
-        image_path = get_path(in_data_path, image_name)
+def predict(data_path, model_path, config ):
+    image_size = config.image_size
+    model = keras.models.load_model(model_path)
+    for image_name in os.listdir(data_path):
+        image_path = get_path(data_path, image_name)
         image = cv2.imread(image_path)
         image = cv2.resize(image, (image_size, image_size))
 
         predictions = model.predict([image.reshape(-1, image_size, image_size, 3)])
         class_id = np.argmax(predictions)
-        class_name = get_category(in_config, class_id)
+        class_name = get_category(config, class_id)
         print(image_name + ': Prediction ' + class_name)
         plt.imshow(image, cmap=plt.cm.binary)
         plt.xlabel(class_name)
-        if in_config.display_plot:
+        if config.display_plot:
             plt.show()

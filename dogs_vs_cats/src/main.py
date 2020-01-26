@@ -1,31 +1,29 @@
 import config
 from util import get_path
 from data_prepration import prepare_data
-from factory import GenerateModel
-from factory import GenerateTraner
-from factory import GeneratePredicter
+import factory as gnerater
 
 from numpy import load
 
 class TrainingData:
     def __init__(self, in_config):
 
-        print("Loading trainX data!")
+        print("Loading x_train data!")
         root = in_config.data_path_root
-        trainX_path = get_path(root, in_config.trainX_path)
-        self.trainX = load(trainX_path)
+        x_train_path = get_path(root, in_config.trainX_path)
+        self.x_train = load(x_train_path)
 
-        print("Loading trainY data!")
-        trainY_path = get_path(root, in_config.trainY_path)
-        self.trainY = load(trainY_path)
+        print("Loading y_train data!")
+        y_train_path = get_path(root, in_config.trainY_path)
+        self.y_train = load(y_train_path)
 
-        print("Loading testX data!")
-        testX_path = get_path(root, in_config.testX_path)
-        self.testX = load(testX_path)
+        print("Loading x_test data!")
+        x_test_path = get_path(root, in_config.testX_path)
+        self.x_test = load(x_test_path)
 
-        print("Loading testY data!")
-        testY_path = get_path(root, in_config.testY_path)
-        self.testY  = load(testY_path)
+        print("Loading y_test data!")
+        y_test_path = get_path(root, in_config.testY_path)
+        self.y_test  = load(y_test_path)
 
 def print_main_menu():
     print('press d for data_preparation: ')
@@ -66,13 +64,13 @@ def main():
         if (train_action == "\n" or train_action == ""):
             train_action = input()
 
-        trainer = GenerateTraner(train_action)
+        trainer = gnerater.GenerateTraner(train_action)
         print_model_menu()
         model_action = input()
         if (model_action == "\n" or model_action == ""):
             model_action = input()
 
-        model_generater = GenerateModel(model_action)
+        model_generater = gnerater.GenerateModel(model_action)
         training_data = TrainingData(config)
         trainer.run_function(model_generater, config, training_data)
 
@@ -83,7 +81,7 @@ def main():
         predic_action = input()
         if (predic_action == "\n" or predic_action == ""):
             predic_action = input()
-        predicter = GeneratePredicter(predic_action)
+        predicter = gnerater.GeneratePredicter(predic_action)
         predicter.run_function(config)
         return
 

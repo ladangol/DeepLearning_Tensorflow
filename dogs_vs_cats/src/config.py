@@ -3,10 +3,10 @@ model_path_root = 'models'
 data_path_root = 'data'
 
 #Data
-trainX_path='trainX_small.npy'
-trainY_path='trainY_small.npy'
-testX_path='testX_small.npy'
-testY_path='testY_small.npy'
+x_train_path='x_train_small.npy'
+y_train_path='y_train_small.npy'
+x_test_path='x_test_small.npy'
+y_test_path='y_test_small.npy'
 
 dict_categories = {0: 'Dog', 1: 'Cat'}
 

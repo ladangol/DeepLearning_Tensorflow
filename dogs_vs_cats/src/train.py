@@ -1,5 +1,7 @@
-import config
-from util import get_path, plot_confusion_matrix, get_categories, generate_current_config_to_string
+from util import get_path
+from util import plot_confusion_matrix
+from util import get_categories
+from util import generate_current_config_to_string
 from main import TrainingData
 from simple_cnn import step_decay
 
@@ -17,8 +19,8 @@ import time
 
 
 
-def grind_serach(in_model_generater,in_config, training_data):
-    if in_model_generater == None:
+def grind_serach(model_generater, config, training_data):
+    if model_generater == None:
         return
     config_to_string = generate_current_config_to_string(config)
 
@@ -44,7 +46,7 @@ def grind_serach(in_model_generater,in_config, training_data):
                     config.confusion_matrix_file_name = "confusion_matrix" + config_to_string + ".txt"
                     config.confusion_matrix_plot_name = "confusion_matrix" + config_to_string + ".png"
 
-                    train(in_model_generater, config, training_data)
+                    train(model_generater, config, training_data)
 
     grid_serch_result_path = get_path(config.data_path_root, 'all_test.txt')
     grid_search = {}
@@ -62,28 +64,28 @@ def grind_serach(in_model_generater,in_config, training_data):
     df = pd.DataFrame.from_dict(new_dict)
     sorted_df = df.sort_values('f1-score')
     # find max frequency of the gs with accuracy about 85
-    # start filtering with thoes have maximum frequency
+    # start filtering with those have maximum frequency
     worst_results = sorted_df.iloc[0:5, :]
     best_results = sorted_df.iloc[-5:, :]
-    result_full_path = get_path(config.data_path_root, 'worth_results.csv')
+    result_full_path = get_path(config.data_path_root, 'worst_results.csv')
     worst_results.to_csv(result_full_path)
     result_full_path = get_path(config.data_path_root, 'best_results.csv')
     best_results.to_csv(result_full_path)
 
-def train( in_model_generater, in_config, training_data):
+def train(model_generater, config, training_data):
     if not isinstance(training_data, TrainingData):
         raise AssertionError("training_data should be provided as a TrainingData!")
 
-    trainX = training_data.trainX
-    testX  = training_data.testX
-    trainY = training_data.trainY
-    testY = training_data.testY
+    x_train = training_data.x_train
+    x_test  = training_data.x_test
+    y_train = training_data.y_train
+    y_test = training_data.y_test
 
-    in_model = in_model_generater.run_function(config)
+    in_model = model_generater.run_function(config)
 
     config_to_string = generate_current_config_to_string(config)
     NAME = 'Cat-vs-dog' + config_to_string + f'{int(time.time())}'
-    file_path = "Model-LR"+ str(in_config.initial_lrate) + "-E{epoch:02d}-VA-{val_acc:.3f}"  # unique file name that will include the epoch and the validation acc for that epoch
+    file_path = "Model-LR"+ str(config.initial_lrate) + "-E{epoch:02d}-VA-{val_acc:.3f}"  # unique file name that will include the epoch and the validation acc for that epoch
     check_point = ModelCheckpoint("Models/logs/{}.model".format(file_path, monitor='val_acc', verbose=1, save_best_only=True,
                                                           mode='max'))  # saves only the best ones
     log_path = get_path(config.model_path_root, 'logs')
@@ -97,14 +99,14 @@ def train( in_model_generater, in_config, training_data):
         makedirs("Models/logs")
 
     with open('Models/logs/metadata.tsv', 'w') as f:
-        np.savetxt(f, np.zeros(len(testY)))
+        np.savetxt(f, np.zeros(len(y_test)))
 
     tensor_board = TensorBoard(log_dir=log_full_path,
-                              batch_size=in_config.batch_size,
+                              batch_size=config.batch_size,
                               embeddings_freq=1,
                               embeddings_layer_names=['features'],
                               embeddings_metadata='metadata.tsv',
-                              embeddings_data=testX)
+                              embeddings_data=x_test)
 
     log_file_full_path = "Models/logs/" + NAME + ".csv"
     csv_logger = CSVLogger(log_file_full_path, append=True, separator=';')
@@ -120,25 +122,25 @@ def train( in_model_generater, in_config, training_data):
         callback_list = [tensor_board, lrate_scheduler, csv_logger]
 
     # train the neural network
-    history = in_model.fit(trainX, trainY, validation_data=(testX, testY), epochs=in_config.num_epochs,
-                 batch_size=in_config.batch_size, verbose=1, callbacks=callback_list)
+    history = in_model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=config.num_epochs,
+                 batch_size=config.batch_size, verbose=1, callbacks=callback_list)
 
     # evaluate the network
     print("[INFO] evaluating network...")
-    predictions = in_model.predict(testX, batch_size=in_config.batch_size)
+    predictions = in_model.predict(x_test, batch_size=config.batch_size)
     #create confusion matrix
     # print(classification_report(testY.argmax(axis=1), predictions.argmax(axis=1), target_names=get_categories(in_config)))
     # print("")
 
-    cr = classification_report(testY.argmax(axis=1), predictions.argmax(axis=1), target_names=get_categories(in_config), output_dict = False)
-    confusion_matrix_file_name = get_path(get_path('Models','logs'), in_config.confusion_matrix_detailed_file_name)
+    cr = classification_report(y_test.argmax(axis=1), predictions.argmax(axis=1), target_names=get_categories(config), output_dict = False)
+    confusion_matrix_file_name = get_path(get_path('Models','logs'), config.confusion_matrix_detailed_file_name)
     with open(confusion_matrix_file_name, 'w') as f:
         f.write(cr)
     print(cr)
     print("")
 
-    cr = classification_report(testY.argmax(axis=1), predictions.argmax(axis=1), target_names=get_categories(in_config), output_dict = True)
-    confusion_matrix_file_name = get_path(get_path('Models','logs'), 'dic_'+in_config.confusion_matrix_detailed_file_name)
+    cr = classification_report(y_test.argmax(axis=1), predictions.argmax(axis=1), target_names=get_categories(config), output_dict = True)
+    confusion_matrix_file_name = get_path(get_path('Models','logs'), 'dic_'+config.confusion_matrix_detailed_file_name)
     with open(confusion_matrix_file_name, 'w') as f:
         # print(cr, file=f)
         f.write(json.dumps(cr))
@@ -146,13 +148,13 @@ def train( in_model_generater, in_config, training_data):
     print(cr)
     print("")
 
-    in_config.grid_serach_validation_result[config_to_string] = cr
+    config.grid_serach_validation_result[config_to_string] = cr
     with open("Models/logs/all_test.txt", 'w') as f:
         # print(cr, file=f)
-        f.write(json.dumps(in_config.grid_serach_validation_result))
+        f.write(json.dumps(config.grid_serach_validation_result))
 
     y_pred_classes = np.argmax(predictions, axis=1)
-    y_true = np.argmax(testY, axis=1)
+    y_true = np.argmax(y_test, axis=1)
     confusion_matrix = metrics.confusion_matrix(y_true=y_true, y_pred=y_pred_classes)
-    plot_confusion_matrix(confusion_matrix, in_config)
+    plot_confusion_matrix(confusion_matrix, config)
 

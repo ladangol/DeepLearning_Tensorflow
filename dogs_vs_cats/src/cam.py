@@ -15,15 +15,13 @@ import matplotlib.pyplot as plt
 import os
 import cv2
 
-def define_model(in_config):
-    in_image_size = in_config.image_size
-    in_num_classes = in_config.num_classes
-    if in_image_size != 224:
+def define_model(config):
+    if config.image_size != 224:
         print("Invalid image size for VGG 16!")
         return None
 
     # load model
-    model = VGG16(include_top=False, input_shape=(in_image_size, in_image_size, 3))
+    model = VGG16(include_top=False, input_shape=(config.image_size, config.image_size, 3))
     # mark loaded layers as not trainable
     for layer in model.layers:
         layer.trainable = True
@@ -31,7 +29,7 @@ def define_model(in_config):
     # add new classifier layers
     GAP = AveragePooling2D(14,14)(model.layers[-2].output)
     flat1 = Flatten()(GAP)
-    output = Dense(in_num_classes, activation='softmax')(flat1)
+    output = Dense(config.num_classes, activation='softmax')(flat1)
     # define new model
     model = Model(inputs=model.inputs, outputs=output)
     # compile model
@@ -42,8 +40,8 @@ def define_model(in_config):
     model .summary()
     return model
 
-def predict(in_data_path, in_model_path, in_image_size):
-    model = keras.models.load_model(in_model_path)
+def predict(data_path, model_path, image_size):
+    model = keras.models.load_model(model_path)
     # get the weights from the last layer
     gap_weights = model.layers[-1].get_weights()[0]
     model.summary()
@@ -52,20 +50,20 @@ def predict(in_data_path, in_model_path, in_image_size):
                       outputs=(model.get_layer("block5_conv3").output, model.layers[-1].output))
     cam_model.summary()
 
-    for image_name in os.listdir(in_data_path):
+    for image_name in os.listdir(data_path):
         idx = 0
-        image_path = get_path(in_data_path, image_name)
+        image_path = get_path(data_path, image_name)
         image = cv2.imread(image_path)
-        image = cv2.resize(image, (in_image_size, in_image_size))
+        image = cv2.resize(image, (image_size, image_size))
 
-        features, results = cam_model.predict([image.reshape(-1, in_image_size, in_image_size, 3)])
+        features, results = cam_model.predict([image.reshape(-1, image_size, image_size, 3)])
 
         # get the feature map of the test image
         features_for_one_img = features[idx, :, :, :]
 
         # map the feature map to the original size
-        height_roomout = in_image_size / features_for_one_img.shape[0]
-        width_roomout = in_image_size / features_for_one_img.shape[1]
+        height_roomout = image_size / features_for_one_img.shape[0]
+        width_roomout = image_size / features_for_one_img.shape[1]
         # over sample the heat map to overlay on image
         cam_features = sp.ndimage.zoom(features_for_one_img, (height_roomout, width_roomout, 1), order=2)
 
