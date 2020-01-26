@@ -9,13 +9,12 @@ from keras.layers import AveragePooling2D
 from keras.applications.vgg16 import VGG16
 
 import scipy as sp
+import numpy as np
 from matplotlib import pyplot
+import matplotlib.pyplot as plt
 import os
 import cv2
-import matplotlib.pyplot as plt
-import numpy as np
 
-# define cnn model
 def define_model(in_config):
     in_image_size = in_config.image_size
     in_num_classes = in_config.num_classes

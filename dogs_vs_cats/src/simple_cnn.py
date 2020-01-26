@@ -1,4 +1,3 @@
-
     #Augmentation
     # if you have less than 25K you shoudl do it, do it after data spliting. Augmentation is performed only on train data.
       # Augment(do_augment=False, save=Fale)
@@ -40,28 +39,25 @@
     # model evaluation
     #metrics ????
 
-
-
-from util import get_path, get_category
+from util import get_path
+from util import get_category
 
 import keras
 from keras.layers import Dropout
 from keras.models import Sequential
 from keras.layers import Conv2D
 from keras.layers import MaxPooling2D
-
-from keras.layers import LeakyReLU, PReLU, ReLU
-
+from keras.layers import LeakyReLU
+from keras.layers import PReLU
+from keras.layers import ReLU
 from keras.layers import Dense
 from keras.layers import Flatten
 from keras.optimizers import SGD
-
+import matplotlib.pyplot as plt
 import numpy as np
 import os
 import cv2
 import math
-
-import matplotlib.pyplot as plt
 
 # learning rate schedule
 def step_decay(epoch):

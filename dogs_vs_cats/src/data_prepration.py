@@ -9,6 +9,7 @@ import cv2
 
 import keras
 from sklearn.model_selection import train_test_split
+
 small_data_set_size = 20
 
 def split_and_save(in_config, data,labels):
@@ -58,8 +59,9 @@ def prepare_data(in_data_dir, in_config):
 
         output = float(index)
         labels.append(output)
-        if(len(labels)==small_data_set_size):
-            break
+
+        # if(len(labels)==small_data_set_size):
+        #     break
 
     # scale the raw pixel intensities to the range [0, 1]
     data = np.array(data, dtype="float") / 255.0
