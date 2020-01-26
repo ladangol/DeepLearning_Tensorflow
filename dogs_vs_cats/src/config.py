@@ -3,17 +3,17 @@ model_path_root = 'models'
 data_path_root = 'data'
 
 #Data
-trainX_path='trainX.npy'
-trainY_path='trainY.npy'
-testX_path='testX.npy'
-testY_path='testY.npy'
+trainX_path='trainX_small.npy'
+trainY_path='trainY_small.npy'
+testX_path='testX_small.npy'
+testY_path='testY_small.npy'
 
 dict_categories = {0: 'Dog', 1: 'Cat'}
 
 #model
-activation='ReLU'
+activation = 'ReLU'
 kernel_initializer = 'he_uniform'
-bias_initializer = "zeros"
+bias_initializer = 0.0
 image_size = 224
 num_classes = 2
 
