@@ -3,6 +3,27 @@ import matplotlib.pylab as plt
 import itertools
 import numpy as np
 
+from numpy import load
+class TrainingData:
+    def __init__(self, in_config):
+
+        print("Loading x_train data!")
+        root = in_config.data_path_root
+        x_train_path = get_path(root, in_config.x_train_path)
+        self.x_train = load(x_train_path)
+
+        print("Loading y_train data!")
+        y_train_path = get_path(root, in_config.y_train_path)
+        self.y_train = load(y_train_path)
+
+        print("Loading x_test data!")
+        x_test_path = get_path(root, in_config.x_test_path)
+        self.x_test = load(x_test_path)
+
+        print("Loading y_test data!")
+        y_test_path = get_path(root, in_config.y_test_path)
+        self.y_test  = load(y_test_path)
+
 def get_path(in_root, in_folder):
     return os.path.join(in_root, in_folder)
 

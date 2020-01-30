@@ -2,7 +2,8 @@ import config
 from util import get_path
 import simple_cnn
 import cam
-from train import grind_serach
+from inception_resnet_v2 import model as inception_resnet_v2
+from train import grid_search
 from train import train
 
 class GenerateModel:
@@ -11,8 +12,9 @@ class GenerateModel:
 
     def generate_model(self, model_type):
         switcher = {
-            's': simple_cnn.define_model,
-            'c': cam.define_model
+            's':   simple_cnn.define_model,
+            'c':   cam.define_model,
+            'ir2': inception_resnet_v2.define_model
         }
 
         current_model = switcher.get(model_type.lower(), None)
@@ -25,13 +27,13 @@ class GenerateModel:
     def run_function(self, config):
         return  self.fActive(config)
 
-class GenerateTraner:
+class GenerateTrainer:
     def __init__(self,training_type):
         self.fActive = self.generate_trainer(training_type) # mapping: string --> variable = function name
 
     def generate_trainer(self, training_type):
         switcher = {
-            'gs': grind_serach,
+            'gs': grid_search,
             't': train
         }
 

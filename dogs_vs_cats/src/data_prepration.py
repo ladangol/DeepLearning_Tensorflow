@@ -10,7 +10,7 @@ import cv2
 import keras
 from sklearn.model_selection import train_test_split
 
-small_data_set_size = 20
+
 
 def split_and_save(config, data,labels):
     print("Pre-processing data!")
@@ -25,16 +25,16 @@ def split_and_save(config, data,labels):
     y_test = keras.utils.to_categorical(y_test, config.num_classes)
 
     # save the reshaped photos
-    x_train_path = get_path(config.data_path_root, config.trainX_path)
+    x_train_path = get_path(config.data_path_root, config.x_train_path)
     save(x_train_path, x_train)
 
-    y_train_path = get_path(config.data_path_root, config.trainY_path)
+    y_train_path = get_path(config.data_path_root, config.y_train_path)
     save(y_train_path, y_train)
 
-    x_test_path = get_path(config.data_path_root, config.testX_path)
+    x_test_path = get_path(config.data_path_root, config.x_test_path)
     save(x_test_path, x_test)
 
-    y_test_path = get_path(config.data_path_root, config.testY_path)
+    y_test_path = get_path(config.data_path_root, config.y_test_path)
     save(y_test_path, y_test)
 
 def prepare_data(data_dir, config):
@@ -65,8 +65,8 @@ def prepare_data(data_dir, config):
         output = float(index)
         labels.append(output)
 
-        # if(len(labels)==small_data_set_size):
-        #     break
+        if config.small_data_set_size > 0 and (len(labels) == config.small_data_set_size):
+            break
 
     # scale the raw pixel intensities to the range [0, 1]
     data = np.array(data, dtype="float") / 255.0

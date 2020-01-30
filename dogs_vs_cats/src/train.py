@@ -2,7 +2,7 @@ from util import get_path
 from util import plot_confusion_matrix
 from util import get_categories
 from util import generate_current_config_to_string
-from main import TrainingData
+from util import TrainingData
 from simple_cnn import step_decay
 
 from sklearn.metrics import classification_report
@@ -19,7 +19,7 @@ import time
 
 
 
-def grind_serach(model_generater, config, training_data):
+def grid_search(model_generater, config, training_data):
     if model_generater == None:
         return
     config_to_string = generate_current_config_to_string(config)
@@ -117,7 +117,7 @@ def train(model_generater, config, training_data):
 
     callback_list = []
     if config.display_plot == True:
-         callback_list = [tensor_board, lrate_scheduler, check_point,csv_logger]
+         callback_list = [check_point]
     else:
         callback_list = [tensor_board, lrate_scheduler, csv_logger]
 
