@@ -1,0 +1,10 @@
+.idea/
+/dogs_vs_cats/models/*.*
+/dogs_vs_cats/data
+/dogs_vs_cats/data/*.*
+/dogs_vs_cats/src/__pycache__
+/dogs_vs_cats/src/__pycache__/*.*
+imdb_sentiment_analysis/data
+imdb_sentiment_analysis/src/__pycache__
+
+

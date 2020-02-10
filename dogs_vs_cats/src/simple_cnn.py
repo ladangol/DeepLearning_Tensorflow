@@ -100,7 +100,7 @@ def define_model(config):
     kernel_init = config.kernel_initializer
     bias        = keras.initializers.Constant(value=config.bias_initializer)
 
-    model.add(Conv2D(32, (3, 3), activation=activation, kernel_initializer=kernel_init, bias_initializer=bias, padding='same', input_shape=(in_config.image_size, in_config.image_size, 3)))
+    model.add(Conv2D(32, (3, 3), activation=activation, kernel_initializer=kernel_init, bias_initializer=bias, padding='same', input_shape=(config.image_size, config.image_size, config.num_channel)))
     model.add(MaxPooling2D((2, 2)))
 
     model.add(Conv2D(64, (3, 3), activation=activation, kernel_initializer=kernel_init, bias_initializer=bias, padding='same'))
@@ -116,7 +116,7 @@ def define_model(config):
     model.add(Dense(128, activation=activation, kernel_initializer=kernel_init, bias_initializer=bias, name = 'features'))
     model.add(Dropout(0.5))
 
-    model.add(Dense(in_config.num_classes, activation="softmax"))
+    model.add(Dense(config.num_classes, activation="softmax"))
     # compile model
     opt = SGD(lr=0.0001, momentum=0.9)
 
