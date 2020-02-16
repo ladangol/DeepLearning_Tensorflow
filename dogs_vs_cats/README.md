@@ -99,16 +99,16 @@ We also introduced a learning rate scheduler that as the epoch increases, slows 
 with the learning rates [0.1(orange), 0.01(dark blue), 0.001(red), 0001(light blue)]
 
 Training logs of grid serach on 4 learning rates:
-![image](../dogs_vs_cats/models/simple-cnn/grid_search_lr/4_LR.jpg)
+
+![image](https://drive.google.com/uc?export=view&id=1njWcwqkRdboYoP5wXFWlywuxQabsIAcD)
 
 The classification results of learning rate 0.1:
 
-![image](../dogs_vs_cats/models/simple-cnn/grid_search_lr/confusion_matrix-E15lr0.1.png)
-
+![image](https://drive.google.com/uc?export=view&id=1nNSliJavghFogLll_57UOO9QO3GUUGqk)
 
 Training logs after removing the learning rate 0.1:
-![image](../dogs_vs_cats/models/simple-cnn/grid_search_lr/3_LR.jpg)
 
+![image](https://drive.google.com/uc?export=view&id=1abYjVekvOh8jmn97q2m3orOGgd3vTypV)
 
 In the next experiment we consider the initial learning rates of [0.01, 0.001]. After the epoch ?, the learning rate scheduler reduces the learning rate by 0.1 every 5 epochs.
 
@@ -124,7 +124,7 @@ Bias initializer: [0.0, 0.01]
 
 Training logs of grid serach:
 
-![image](../dogs_vs_cats/models/simple-cnn/grid_search_hp/HR.jpg)
+![image](https://drive.google.com/uc?export=view&id=16Q-aBkie1JWs2jyc1Pc91uxnJYpVDtJU)
 
 Worst 5 results: 
 
