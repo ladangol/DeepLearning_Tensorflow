@@ -62,12 +62,29 @@ In this case, we can see that the model achieved an accuracy of about 82% on the
 
 Reviewing this figure, we can see that the model has overfit the training dataset at 60 epochs.
 
-![image](../dogs_vs_cats/models/simple-cnn_acc_loss_graph_v1.jpg)
-![image](../dogs_vs_cats/models/simple-cnn_confusion_matrix.jpg)
-![image](../dogs_vs_cats/models/simple-cnn_network_evaluation.jpg)
+simple-cnn_acc_loss_graph_v1
+
+![image](https://drive.google.com/uc?export=view&id=1VkmH1G-GUjrrLo-paKoHLizPB0bMEyUz)
+
+simple-cnn_confusion_matrix
+
+![image](https://drive.google.com/uc?export=view&id=1wA82jPTSyXspneTEnAj1x4vFE6A2-Rhx)
+
+simple-cnn_network_evaluation
+
+![image](https://drive.google.com/uc?export=view&id=1LnU0ur61JAX8GJGdeKJrILSr_0jAbn8Q)
 
 ## Class Activation Map
 Using keras pre-trained model of VGG_16.
+
+confusion_matrix
+
+![image](https://drive.google.com/uc?export=view&id=1cB8-BNXWNnxnjvaB4OJ0NM7gJbS2V7KT)
+
+network_evaluation
+
+![image](https://drive.google.com/uc?export=view&id=1U7c34ml46s2YhSlqegZSKv8Zm-qtRpg_)
+
 
 ![image](../dogs_vs_cats/models/cam_vgg_16/confusion_matrix.jpg)
 ![image](../dogs_vs_cats/models/cam_vgg_16/network_evaluation.jpg)
