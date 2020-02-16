@@ -62,32 +62,34 @@ In this case, we can see that the model achieved an accuracy of about 82% on the
 
 Reviewing this figure, we can see that the model has overfit the training dataset at 60 epochs.
 
-![image](../dogs_vs_cats/models/simple-cnn_acc_loss_graph_v1.jpg)
-![image](../dogs_vs_cats/models/simple-cnn_confusion_matrix.jpg)
-![image](../dogs_vs_cats/models/simple-cnn_network_evaluation.jpg)
+![image](https://drive.google.com/uc?export=view&id=1VkmH1G-GUjrrLo-paKoHLizPB0bMEyUz)
+
+![image](https://drive.google.com/uc?export=view&id=1wA82jPTSyXspneTEnAj1x4vFE6A2-Rhx)
+
+![image](https://drive.google.com/uc?export=view&id=1LnU0ur61JAX8GJGdeKJrILSr_0jAbn8Q)
 
 ## Class Activation Map
 Using keras pre-trained model of VGG_16.
 
-![image](../dogs_vs_cats/models/cam_vgg_16/confusion_matrix.jpg)
-![image](../dogs_vs_cats/models/cam_vgg_16/network_evaluation.jpg)
+![image](https://drive.google.com/uc?export=view&id=1cB8-BNXWNnxnjvaB4OJ0NM7gJbS2V7KT)
+
+![image](https://drive.google.com/uc?export=view&id=1U7c34ml46s2YhSlqegZSKv8Zm-qtRpg_)
 
 - Example 1:
 
-![image](../dogs_vs_cats/models/cam_vgg_16/cam_cat_2.jpg)
+![image](https://drive.google.com/uc?export=view&id=1_ZMJctd4_nDW2M8jASW65mYGK21P1CuN)
 
 - Example 2:
 
-![image](../dogs_vs_cats/models/cam_vgg_16/cam_cat_3.jpg)
+![image](https://drive.google.com/uc?export=view&id=1m2VgXXv1kpQkgKvkn528Fa6p6-9oeG0x)
 
 - Example 3:
 
-![image](../dogs_vs_cats/models/cam_vgg_16/cam_dog_3.jpg)
+![image](https://drive.google.com/uc?export=view&id=1JZ7Br_OwxocrslV7OIBLvHcBKfh7W7vB)
 
 - Example 4:
 
-![image](../dogs_vs_cats/models/cam_vgg_16/cam_dog_5.jpg)
-
+![image](https://drive.google.com/uc?export=view&id=1WNMYsRv7yVgzljjQZ74jx59-t7LFkDTb)
 
 ## Hyper Parameter Tuning:
 
@@ -97,16 +99,16 @@ We also introduced a learning rate scheduler that as the epoch increases, slows 
 with the learning rates [0.1(orange), 0.01(dark blue), 0.001(red), 0001(light blue)]
 
 Training logs of grid serach on 4 learning rates:
-![image](../dogs_vs_cats/models/simple-cnn/grid_search_lr/4_LR.jpg)
+
+![image](https://drive.google.com/uc?export=view&id=1njWcwqkRdboYoP5wXFWlywuxQabsIAcD)
 
 The classification results of learning rate 0.1:
 
-![image](../dogs_vs_cats/models/simple-cnn/grid_search_lr/confusion_matrix-E15lr0.1.png)
-
+![image](https://drive.google.com/uc?export=view&id=1nNSliJavghFogLll_57UOO9QO3GUUGqk)
 
 Training logs after removing the learning rate 0.1:
-![image](../dogs_vs_cats/models/simple-cnn/grid_search_lr/3_LR.jpg)
 
+![image](https://drive.google.com/uc?export=view&id=1abYjVekvOh8jmn97q2m3orOGgd3vTypV)
 
 In the next experiment we consider the initial learning rates of [0.01, 0.001]. After the epoch ?, the learning rate scheduler reduces the learning rate by 0.1 every 5 epochs.
 
@@ -122,7 +124,7 @@ Bias initializer: [0.0, 0.01]
 
 Training logs of grid serach:
 
-![image](../dogs_vs_cats/models/simple-cnn/grid_search_hp/HR.jpg)
+![image](https://drive.google.com/uc?export=view&id=16Q-aBkie1JWs2jyc1Pc91uxnJYpVDtJU)
 
 Worst 5 results: 
 
