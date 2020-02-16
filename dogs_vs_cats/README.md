@@ -62,49 +62,34 @@ In this case, we can see that the model achieved an accuracy of about 82% on the
 
 Reviewing this figure, we can see that the model has overfit the training dataset at 60 epochs.
 
-simple-cnn_acc_loss_graph_v1
-
 ![image](https://drive.google.com/uc?export=view&id=1VkmH1G-GUjrrLo-paKoHLizPB0bMEyUz)
 
-simple-cnn_confusion_matrix
-
 ![image](https://drive.google.com/uc?export=view&id=1wA82jPTSyXspneTEnAj1x4vFE6A2-Rhx)
-
-simple-cnn_network_evaluation
 
 ![image](https://drive.google.com/uc?export=view&id=1LnU0ur61JAX8GJGdeKJrILSr_0jAbn8Q)
 
 ## Class Activation Map
 Using keras pre-trained model of VGG_16.
 
-confusion_matrix
-
 ![image](https://drive.google.com/uc?export=view&id=1cB8-BNXWNnxnjvaB4OJ0NM7gJbS2V7KT)
-
-network_evaluation
 
 ![image](https://drive.google.com/uc?export=view&id=1U7c34ml46s2YhSlqegZSKv8Zm-qtRpg_)
 
-
-![image](../dogs_vs_cats/models/cam_vgg_16/confusion_matrix.jpg)
-![image](../dogs_vs_cats/models/cam_vgg_16/network_evaluation.jpg)
-
 - Example 1:
 
-![image](../dogs_vs_cats/models/cam_vgg_16/cam_cat_2.jpg)
+![image](https://drive.google.com/uc?export=view&id=1_ZMJctd4_nDW2M8jASW65mYGK21P1CuN)
 
 - Example 2:
 
-![image](../dogs_vs_cats/models/cam_vgg_16/cam_cat_3.jpg)
+![image](https://drive.google.com/uc?export=view&id=1m2VgXXv1kpQkgKvkn528Fa6p6-9oeG0x)
 
 - Example 3:
 
-![image](../dogs_vs_cats/models/cam_vgg_16/cam_dog_3.jpg)
+![image](https://drive.google.com/uc?export=view&id=1JZ7Br_OwxocrslV7OIBLvHcBKfh7W7vB)
 
 - Example 4:
 
-![image](../dogs_vs_cats/models/cam_vgg_16/cam_dog_5.jpg)
-
+![image](https://drive.google.com/uc?export=view&id=1WNMYsRv7yVgzljjQZ74jx59-t7LFkDTb)
 
 ## Hyper Parameter Tuning:
 
