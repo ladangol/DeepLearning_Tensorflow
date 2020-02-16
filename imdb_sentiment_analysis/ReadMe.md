@@ -37,13 +37,9 @@ Checkpoints will be saved in DeepLearning_Tensorflow/imdb_sentiment_analysis/mod
 ### Naive bayse project:
 Naive bayse model trains and evaluates on CPU. The confusion matrix is shown in the following image. The accuracy of the model is 72% on validation dataset.
 
-<p align="center">
-  <img width="460" height="300" src="https://drive.google.com/uc?export=view&id=1Nm1pY_7SsW_vv3E4B4yrqF0npaWAa6c2"></img>
-</p>
+![image](https://drive.google.com/uc?export=view&id=1Nm1pY_7SsW_vv3E4B4yrqF0npaWAa6c2)
 
 User feedback integeration:
 User feedbacks are stored in a csv file for re-training the model.
 
-<p align="center">
-  <img width="460" height="300" src="https://drive.google.com/uc?export=view&id=1_IDqv18nVGfqSKxuzLe6acjcwqRDdxOC"></img>
-</p>
+![image](https://drive.google.com/uc?export=view&id=1_IDqv18nVGfqSKxuzLe6acjcwqRDdxOC)
